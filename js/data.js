@@ -28,6 +28,7 @@ const portfolio = {
     "Information Architecture", "ProtoPie", "Adobe CC", "Figma Make",
   ],
 
+  // Populated at runtime from Supabase
   experience: [
     {
       role: "Senior UX Designer",

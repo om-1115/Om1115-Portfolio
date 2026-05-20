@@ -3,7 +3,8 @@
   if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadPortfolioData(['projects']);
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
   const project = portfolio.projects.find(p => p.id === id);

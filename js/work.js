@@ -5,7 +5,6 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
   await loadPortfolioData(['projects']);
-
   const app = document.getElementById("app");
 
   app.innerHTML = [

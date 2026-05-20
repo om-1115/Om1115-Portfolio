@@ -263,7 +263,8 @@ function initFloatingChips() {
   }));
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadPortfolioData(['experience', 'testimonials']);
   const app = document.getElementById("app");
 
   // ─── Loading screen ───────────────────────────────────────────────────────
