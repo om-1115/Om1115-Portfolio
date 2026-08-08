@@ -145,6 +145,9 @@ const portfolio = {
       ],
     },
     {
+      // HIDDEN — kept in full, just not rendered. Both experience sections skip
+      // any entry with hidden: true, so deleting this one line puts it back.
+      hidden: true,
       role: "Design Lead",
       company: "Agami",
       url: "https://agami.in/",

@@ -359,8 +359,12 @@ function CompanyLogo({ logoId, logoGradient, logoUrl, company }) {
     </div>`;
 }
 
+// An entry marked hidden: true stays in the data and off the page — see the
+// note on the hidden entry in data.js.
+const visibleExperience = experience => (experience || []).filter(e => !e.hidden);
+
 function HomeExperienceSection({ experience }) {
-  const cards = experience.map(({ role, company, period, location, tags, logoGradient, logoId, logoUrl }) => {
+  const cards = visibleExperience(experience).map(({ role, company, period, location, tags, logoGradient, logoId, logoUrl }) => {
     const tagsHTML = tags.map(t => `<span class="tag">${t}</span>`).join("");
     return `
       <div class="hexp__card">
@@ -382,7 +386,7 @@ function HomeExperienceSection({ experience }) {
 }
 
 function ExperienceSection({ experience }) {
-  const items = experience.map(({ role, company, url, period, location, tags, points }) => {
+  const items = visibleExperience(experience).map(({ role, company, url, period, location, tags, points }) => {
     const tagsHTML = tags.map(t => Tag({ label: t })).join("");
     const pointsHTML = points.map(p => `<li class="exp__point">${p}</li>`).join("");
     const companyEl = url

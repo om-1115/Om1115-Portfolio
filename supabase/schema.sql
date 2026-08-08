@@ -29,7 +29,10 @@ create table experience (
   logo_id        text,
   logo_url       text,
   points         jsonb default '[]',
-  sort_order     int  default 0
+  sort_order     int  default 0,
+  -- kept out of the page without being deleted; both experience sections in
+  -- js/components.js skip a row with this set
+  hidden         boolean default false
 );
 
 create table testimonials (
