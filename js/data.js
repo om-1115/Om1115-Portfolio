@@ -178,6 +178,12 @@ const portfolio = {
         "Multiple product and design thinking along with on-ground research resulting in accelerated usage of app and website.",
         "Worked on improving user interfaces for high-stake civic platforms including Kumbh Sah'AIyak and Bharat Sah'AIyak (now part of Krutrim-OLA).",
         "Implemented user and stakeholder feedback, reworked friction points, and consequently improved user experience across products.",
+        // Added verbatim. These sit after the Bharat Sah'AIyak point on purpose:
+        // "Now an AI-powered vibe-marketing platform" has no subject of its own,
+        // so it needs that mention above it to read as being about the product.
+        "Sole designer 0 → launch",
+        "Built entire AI-product design system",
+        "Now an AI-powered vibe-marketing platform",
       ],
     },
     {
