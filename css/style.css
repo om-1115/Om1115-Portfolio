@@ -608,6 +608,7 @@ ul { list-style: none; }
   aspect-ratio: 16 / 10;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
   background: var(--thumb-bg, var(--surface));
   display: flex;
   align-items: center;
@@ -618,6 +619,63 @@ ul { list-style: none; }
 
 .fw-card:hover .fw-card__thumb {
   transform: scale(1.025);
+}
+
+/* ─── Pointer motion on the thumbnails ──────────────────────────────────────
+   js/card-motion.js flags the root element once it has installed, so this whole
+   block only applies where it is actually driving. Without JS, without a fine
+   pointer, or under prefers-reduced-motion the plain hover scale above stands.
+   The flag is on the root rather than the grid because the grid is rendered
+   from script and replaced again when the data call settles.
+   Every transform here is written per frame from script, which is why the
+   transition is dropped — a transition would fight the easing. */
+html.card-motion .fw-grid .fw-card {
+  perspective: 900px;
+}
+
+html.card-motion .fw-grid .fw-card__thumb {
+  transition: none;
+  transform-style: preserve-3d;
+}
+
+html.card-motion .fw-grid .fw-card:hover .fw-card__thumb {
+  transform: none;   /* the script owns this transform now */
+}
+
+html.card-motion .fw-grid .fw-card.is-live .fw-card__thumb {
+  will-change: transform;
+  box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.45);
+}
+
+/* The artwork slides against the frame — that opposition is what reads as
+   depth. Scaled slightly so the slide never exposes an edge. */
+html.card-motion .fw-grid .fw-card__thumb-img,
+html.card-motion .fw-grid .fw-card__thumb .wss {
+  transition: none;
+  transform-origin: center;
+}
+
+html.card-motion .fw-grid .fw-card.is-live .fw-card__thumb-img,
+html.card-motion .fw-grid .fw-card.is-live .fw-card__thumb .wss {
+  will-change: transform;
+}
+
+/* Highlight tracking the pointer. Soft-light keeps it a sheen on the artwork
+   rather than a white blob over it. */
+html.card-motion .fw-grid .fw-card__thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: var(--sheen, 0);
+  mix-blend-mode: soft-light;
+  background: radial-gradient(
+    42% 52% at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0) 72%
+  );
 }
 
 /* A composed thumbnail already carries its own ground and padding */
