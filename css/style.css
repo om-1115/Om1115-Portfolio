@@ -10,18 +10,30 @@
   --accent: #101012;
   --accent-fg: #ffffff;
 
-  /* EXPERIMENT — accent swapped from red to cobalt. To put red back, restore
-     the two values on each pair below (and the two hexes in the footer
-     ornament's data URI, which cannot reference a custom property).
-         red:    #f90000 / #d40000        dark: #ff3b3b / #ff6b6b
-         cobalt: #2b5cff / #1d4ed8        dark: #6b93ff / #8fb0ff
+  /* EXPERIMENT — accent is on its third colour. To go back to an earlier one,
+     restore the two values on each pair below, the two hexes in the footer
+     ornament's data URI (which cannot reference a custom property), and COBALT
+     in scripts/gen-favicon.js — then re-run that script, since the favicon
+     bakes the colour into a PNG.
+         red:     #f90000 / #d40000       dark: #ff3b3b / #ff6b6b
+         cobalt:  #2b5cff / #1d4ed8       dark: #6b93ff / #8fb0ff
+         sienna:  #c2410c / #9a3412       dark: #f2703c / #f79268   ← current
      The token names still say "red" — they are the accent slot, and renaming
-     them would make putting red back a much larger diff.
-     Display accent is used for large text and fills; ink is for anything under
-     ~24px. Cobalt measures 5.15:1 on white against the red's 4.18:1, so this
-     swap gains contrast rather than spending it. */
-  --accent-red: #2b5cff;
-  --accent-red-ink: #1d4ed8;
+     them would make putting an earlier colour back a much larger diff.
+
+     Display accent is used for large text and for fills; ink is for anything
+     under ~24px. The display value has to clear 4.5:1 on white in both
+     directions, because #fff sits on it in the chips, the dock's Resume pill
+     and the résumé Download button — 3:1 would be enough for large text but
+     not for a button label. Sienna measures 5.18:1 against cobalt's 5.15:1, so
+     the swap is like-for-like on contrast.
+
+     Known gap, older than this swap: in dark mode the accent lightens so it
+     can be read as text on the dark ground, which leaves #fff on those same
+     fills at 2.93:1 (cobalt was 2.90:1). Fixing it means dark text on the
+     accent in dark mode, not a different accent. */
+  --accent-red: #c2410c;
+  --accent-red-ink: #9a3412;
 
   --hero-bg: var(--bg);
   --hero-particle-rgb: 16, 16, 18;
@@ -54,8 +66,8 @@
   --hero-bg: #0c0a08;
   --hero-particle-rgb: 240, 236, 229;
 
-  --accent-red: #6b93ff;
-  --accent-red-ink: #8fb0ff;
+  --accent-red: #f2703c;
+  --accent-red-ink: #f79268;
 }
 
 /* ─── Force-dark sections (always dark regardless of theme) ──────────────── */
@@ -2390,7 +2402,7 @@ a.exp__company:hover {
   height: 22px;
   background-image:
     linear-gradient(var(--border), var(--border)),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='22'><path d='M6 6 L14 6 L10 14 Z' fill='none' stroke='%237a7066' stroke-width='1'/><path d='M34 14 L42 14 L38 6 Z' fill='none' stroke='%237a7066' stroke-width='1'/><circle cx='24' cy='10' r='1.6' fill='%232b5cff'/><circle cx='60' cy='10' r='1.6' fill='%232b5cff'/></svg>");
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='72' height='22'><path d='M6 6 L14 6 L10 14 Z' fill='none' stroke='%237a7066' stroke-width='1'/><path d='M34 14 L42 14 L38 6 Z' fill='none' stroke='%237a7066' stroke-width='1'/><circle cx='24' cy='10' r='1.6' fill='%23c2410c'/><circle cx='60' cy='10' r='1.6' fill='%23c2410c'/></svg>");
   background-size: 100% 1px, 72px 22px;
   background-position: center, center;
   background-repeat: no-repeat, repeat-x;

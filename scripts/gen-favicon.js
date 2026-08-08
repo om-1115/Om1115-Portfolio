@@ -5,8 +5,12 @@
      npm install opentype.js
      curl -o InstrumentSerif-Regular.ttf \
        "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zI.ttf"
-     python3 -m http.server 8091 &          # canvas taints under file://
-     node scripts/gen-favicon.js
+     python3 -m http.server 8080 &          # canvas taints an SVG from file://
+     node scripts/gen-favicon.js            # PORT= to use a different one
+
+   The server has to be rooted at the repo, because the rasteriser loads the
+   generated SVGs over http — drawing a file:// SVG into a canvas taints it and
+   toDataURL then throws.
 
    Instrument Serif is SIL Open Font License 1.1, which permits redistributing
    outlines. It is the same face the footer wordmark is cut from, so the tab
@@ -20,7 +24,7 @@
    when offered and would scale the two-letter mark straight back down into the
    mush this split exists to avoid. It is written anyway, as the scalable master.
 
-   Re-run after changing the accent colour — COBALT below must track
+   Re-run after changing the accent colour — ACCENT below must track
    --accent-red in css/style.css. */
 
 const { execFileSync } = require('child_process');
@@ -32,9 +36,9 @@ const ROOT = path.join(__dirname, '..');
 const ICONS = path.join(ROOT, 'assets', 'icons');
 const TMP = path.join(ROOT, '.favicon-tmp');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const PORT = 8091;
+const PORT = process.env.PORT || 8080;   // the repo's usual dev server
 
-const COBALT = '#2b5cff';           // --accent-red
+const ACCENT = '#c2410c';           // must track --accent-red in css/style.css
 const FONT = './InstrumentSerif-Regular.ttf';
 
 const font = opentype.parse(fs.readFileSync(FONT).buffer);
@@ -75,7 +79,7 @@ function tile(text, { pad = 9, track = 0, grow = 0, radius = 14 } = {}) {
     ? ` stroke="#fff" stroke-width="${(grow / s).toFixed(1)}" stroke-linejoin="round"`
     : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="${radius}" fill="${COBALT}"/>
+  <rect width="64" height="64" rx="${radius}" fill="${ACCENT}"/>
   <g transform="translate(${tx.toFixed(2)} ${ty.toFixed(2)}) scale(${s.toFixed(4)})" fill="#fff"${stroke}>
     <path d="${g.d}"/>
   </g>
