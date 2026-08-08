@@ -2,7 +2,7 @@
 
 // contactHref: pages that render the contact band scroll to it; the project
 // pages do not have one, so they hand off to the home page's.
-function BottomDock({ name, email }, { page = 'home', contactHref = '#contact' } = {}) {
+function BottomDock({ name, email, resume }, { page = 'home', contactHref = '#contact' } = {}) {
   const isWork  = page === 'work';
   const isAbout = page === 'about';
   const isPlay  = page === 'play';
@@ -25,7 +25,8 @@ function BottomDock({ name, email }, { page = 'home', contactHref = '#contact' }
           ${isPlay ? '<span class="dock__bullet"></span>' : ''}Play here
         </a>
         <a class="dock__link" href="${contactHref}">Contact</a>
-        <a class="dock__resume" href="#">
+        <a class="dock__resume" href="${(resume && resume.file) || '#'}" target="_blank" rel="noopener"
+           data-resume${resume && resume.filename ? ` data-filename="${resume.filename}"` : ''}${resume && resume.updated ? ` data-updated="${resume.updated}"` : ''}>
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
             <path d="M8 2v8M4 7l4 4 4-4M3 13h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -542,6 +543,138 @@ if (typeof document !== 'undefined' && !window.__contactCopyBound) {
       .then(() => done('Copied'))
       // Clipboard can be blocked; fall back to opening the mail client
       .catch(() => { done('Opening mail'); window.location.href = 'mailto:' + btn.dataset.email; });
+  });
+}
+
+/* ─── Résumé overlay ─────────────────────────────────────────────────────────
+   The dock's Resume link points at the PDF itself and opens in a new tab, so it
+   works with JavaScript off. This intercepts the click and shows the file in
+   place instead, with download and open-in-new-tab in a bar across the top.
+
+   Built on first open rather than rendered into every page, and the <iframe> is
+   only given its src at that moment — otherwise every page load would fetch a
+   1.6MB PDF nobody asked for.
+
+   Mobile browsers get the actions without the embed. iOS Safari renders a PDF
+   in an iframe as a single non-scrolling page, which looks broken rather than
+   minimal, and no feature query reports that — so the cut is by viewport, where
+   an embedded A4 page is unreadable anyway. */
+if (typeof document !== 'undefined' && !window.__resumeOverlayBound) {
+  window.__resumeOverlayBound = true;
+
+  let el = null;         // the overlay, built once
+  let opener = null;     // what to hand focus back to
+
+  const EMBEDS = () => !window.matchMedia('(max-width: 720px)').matches;
+
+  function build(href, filename, updated) {
+    const wrap = document.createElement('div');
+    wrap.className = 'rz';
+    wrap.id = 'resume-overlay';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', 'Résumé');
+
+    const actions = `
+      <div class="rz__actions">
+        <a class="rz__btn rz__btn--primary" href="${href}" download="${filename || ''}">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8M4 7l4 4 4-4M3 13h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Download
+        </a>
+        <a class="rz__btn" href="${href}" target="_blank" rel="noopener">
+          Open
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 3h7v7M13 3L4 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <button class="rz__close" type="button" aria-label="Close résumé">
+          <svg width="15" height="15" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M2 2L16 16M16 2L2 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>`;
+
+    // #toolbar=0 — the viewer's own chrome would sit right under ours and
+    // duplicate the download button. view=FitH fits the page width.
+    const body = EMBEDS()
+      ? `<iframe class="rz__frame" title="Résumé, PDF" data-src="${href}#toolbar=0&navpanes=0&view=FitH"></iframe>`
+      : `<div class="rz__fallback">
+           <p class="rz__fallback-h">Best read full screen</p>
+           <p class="rz__fallback-p">Phone browsers squeeze an A4 page down past readable. Open it in a tab or take the file.</p>
+         </div>`;
+
+    wrap.innerHTML = `
+      <div class="rz__panel" role="document">
+        <div class="rz__bar">
+          <div class="rz__meta">
+            <span class="rz__title">Résumé</span>
+            ${updated ? `<span class="rz__updated">Updated ${updated}</span>` : ''}
+          </div>
+          ${actions}
+        </div>
+        <div class="rz__body">${body}</div>
+      </div>`;
+
+    document.body.appendChild(wrap);
+
+    wrap.addEventListener('click', e => {
+      if (e.target === wrap) close();                       // backdrop
+      if (e.target.closest('.rz__close')) close();
+      // taking the file is not a reason to lose your place
+      if (e.target.closest('.rz__btn--primary')) setTimeout(close, 400);
+    });
+
+    return wrap;
+  }
+
+  function open(trigger) {
+    const href = trigger.getAttribute('href');
+    if (!href || href === '#') return false;
+
+    opener = trigger;
+    if (!el) el = build(href, trigger.dataset.filename, trigger.dataset.updated);
+
+    // load the PDF now, not at page load
+    const frame = el.querySelector('.rz__frame');
+    if (frame && !frame.src) frame.src = frame.dataset.src;
+
+    const scroller = document.getElementById('scroll-wrap');
+    if (scroller) scroller.classList.add('no-scroll');
+
+    el.classList.add('is-open');
+    const first = el.querySelector('.rz__close');
+    if (first) first.focus();
+    return true;
+  }
+
+  function close() {
+    if (!el || !el.classList.contains('is-open')) return;
+    el.classList.remove('is-open');
+    const scroller = document.getElementById('scroll-wrap');
+    if (scroller) scroller.classList.remove('no-scroll');
+    if (opener) { opener.focus(); opener = null; }
+  }
+
+  document.addEventListener('click', e => {
+    const trigger = e.target.closest && e.target.closest('[data-resume]');
+    if (!trigger) return;
+    // a modifier or middle click means they want their own tab — let them have it
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    if (open(trigger)) e.preventDefault();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!el || !el.classList.contains('is-open')) return;
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key !== 'Tab') return;
+    // keep tabbing inside the dialog
+    const stops = el.querySelectorAll('a[href], button');
+    if (!stops.length) return;
+    const first = stops[0], last = stops[stops.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 }
 

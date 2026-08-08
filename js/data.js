@@ -21,6 +21,17 @@ const portfolio = {
     "Over time, I found myself more interested in design systems and the spaces where design meets engineering. I love creating order, consistency, and scalable foundations. I've designed for governance, education, and healthcare — and I find myself most engaged when thinking about how systems can scale without breaking.",
   ],
   email: "okumar1502@gmail.com",
+
+  // The dock's Resume button. `file` is also the link's real href, so the PDF
+  // is reachable with JavaScript off; the overlay is the enhancement on top.
+  // Update `updated` whenever the file is replaced — it is shown in the header.
+  resume: {
+    file: "assets/om-kumar-resume.pdf",
+    filename: "Om-Kumar-Resume.pdf",
+    updated: "August 2026",
+    pages: 1,
+  },
+
   linkedin: "https://www.linkedin.com/in/om-kumar-707762201/",
   behance: "https://www.behance.net/omkumar20cs105",
   github: "https://github.com/om-1115",
