@@ -139,9 +139,12 @@ const portfolio = {
       tags: ["EdTech", "AI", "Design Systems"],
       logoGradient: "linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%)",
       logoId: "convegenius",
+      // First two points lifted from the résumé, so the numbers here are sourced
+      // rather than estimated. They lead because they are the specific ones.
       points: [
+        "Direct design for 4 government education products deployed across 6 Indian states, spanning teacher entitlements, holistic assessment and multilingual AI assistance for 1.2M users.",
+        "Built the HPC design system on a three-layer token architecture (primitive → semantic → component) with Zag.js state machines, published to npm with Nextra docs and adopted across React, Vue and Solid.",
         "Increasing user experience, enhancing usability and optimizing workflows of tech-based solutions for optimum educational impact.",
-        "Leading the development and implementation of a token-based design system, improving consistency and scalability across multiple platforms.",
       ],
     },
     {
