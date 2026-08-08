@@ -1,19 +1,18 @@
-// Default to dark on about page unless user explicitly chose light
+// Light by default — dark only when the visitor explicitly picked it
 (function () {
   const saved = localStorage.getItem("theme");
-  const dark = saved ? saved === "dark" : true;
-  if (dark) document.documentElement.setAttribute("data-theme", "dark");
+  if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
 })();
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadPortfolioData(['experience']);
-
   const app = document.getElementById("app");
 
+  // Render immediately with static fallback data
   app.innerHTML = [
     AboutHeroSection(portfolio),
     ExperienceSection(portfolio),
-    Footer(portfolio),
+    IntelligenceTriangle(portfolio),
+    Footer(portfolio, { contact: true }),
     BottomDock(portfolio, { page: "about" }),
   ].join("");
 
@@ -52,55 +51,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, { passive: true });
   }
 
-  // ─── Draggable photos ─────────────────────────────────────────────────────
-  document.querySelectorAll(".photo-card").forEach((card, idx) => {
-    let dragging = false;
-    let startX, startY, startLeft, startTop;
 
-    function getPos() {
-      return {
-        l: parseFloat(card.style.left) || 0,
-        t: parseFloat(card.style.top)  || 0,
-      };
-    }
-
-    card.addEventListener("mousedown", e => {
-      dragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      const p = getPos();
-      startLeft = p.l;
-      startTop  = p.t;
-      card.style.zIndex = 50 + idx;
-      card.style.transition = "none";
-      e.preventDefault();
-    });
-
-    card.addEventListener("touchstart", e => {
-      dragging = true;
-      startX = e.touches[0].clientX;
-      startY = e.touches[0].clientY;
-      const p = getPos();
-      startLeft = p.l;
-      startTop  = p.t;
-      card.style.zIndex = 50 + idx;
-      card.style.transition = "none";
-    }, { passive: true });
-
-    function onMove(cx, cy) {
-      if (!dragging) return;
-      card.style.left = (startLeft + cx - startX) + "px";
-      card.style.top  = (startTop  + cy - startY) + "px";
-    }
-
-    document.addEventListener("mousemove",  e => onMove(e.clientX, e.clientY));
-    document.addEventListener("touchmove",  e => onMove(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-
-    function onEnd() {
-      dragging = false;
-      card.style.transition = "";
-    }
-    document.addEventListener("mouseup",  onEnd);
-    document.addEventListener("touchend", onEnd);
-  });
+  // Fetch live experience data in background and patch the section
+  await loadPortfolioData(['experience']);
+  const expEl = document.getElementById('experience');
+  if (expEl) expEl.outerHTML = ExperienceSection(portfolio);
 });

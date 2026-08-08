@@ -4,24 +4,49 @@
 })();
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadPortfolioData(['projects']);
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
-  const project = portfolio.projects.find(p => p.id === id);
   const app = document.getElementById("app");
+
+  // Try to find project in static data first
+  let project = portfolio.projects.find(p => p.id === id);
+
+  if (!project) {
+    // Need to load from DB
+    await loadPortfolioData(['projects']);
+    project = portfolio.projects.find(p => p.id === id);
+  }
 
   if (!project) {
     app.innerHTML = `<div style="padding:4rem;text-align:center;color:var(--text-muted)">Project not found. <a href="work.html" style="color:var(--text);text-decoration:underline">Back to work</a></div>`;
     return;
   }
 
+  // Coming-soon entries have no case study yet — they aren't linked from the
+  // grid, but don't blow up if someone lands here directly.
+  if (!project.detail) {
+    app.innerHTML = `<div style="padding:4rem;text-align:center;color:var(--text-muted)">${project.title} — case study coming soon. <a href="work.html" style="color:var(--text);text-decoration:underline">Back to work</a></div>`;
+    return;
+  }
+
   document.title = `${project.title} — Om Kumar`;
 
+  // Two layouts: the linear, image-led story page, and the two-view case file.
+  const PageLayout = project.detail.story ? ProjectStoryPage : ProjectCaseStudyPage;
+
   app.innerHTML = [
-    ProjectPageContent(project),
+    PageLayout(project),
     Footer(portfolio),
-    BottomDock(portfolio, { page: "work" }),
+    BottomDock(portfolio, { page: "work", contactHref: "index.html#contact" }),
   ].join("");
+
+  // ─── Scroll container ─────────────────────────────────────────────────────
+  // html/body have overflow:hidden — #scroll-wrap is what actually scrolls.
+  const scroller  = document.getElementById('scroll-wrap') || window;
+  const isWin     = scroller === window;
+  const scrollTop = () => isWin ? window.scrollY : scroller.scrollTop;
+  const onScroll  = fn => scroller.addEventListener('scroll', fn, { passive: true });
+  const scrollToY = y => scroller.scrollTo({ top: y, behavior: 'smooth' });
 
   const toggleBtn = document.getElementById("theme-toggle");
   const moonIcon  = document.getElementById("theme-icon-moon");
@@ -47,130 +72,113 @@ document.addEventListener("DOMContentLoaded", async () => {
     <path d="M8 12V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>`;
   document.body.appendChild(goTopBtn);
-  const scrollWrap = document.getElementById('scroll-wrap') || window;
-  (scrollWrap === window ? window : scrollWrap).addEventListener('scroll', () => {
-    goTopBtn.classList.toggle('is-visible', (scrollWrap === window ? scrollWrap.scrollY : scrollWrap.scrollTop) > 300);
-  }, { passive: true });
-  goTopBtn.addEventListener('click', () => {
-    (scrollWrap === window ? window : scrollWrap).scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  onScroll(() => goTopBtn.classList.toggle('is-visible', scrollTop() > 300));
+  goTopBtn.addEventListener('click', () => scrollToY(0));
 
   // ─── Dock scroll hide/show ────────────────────────────────────────────────
   const dockWrap = document.getElementById("dock-wrap");
   if (dockWrap) {
     let lastY = 0;
-    window.addEventListener("scroll", () => {
-      const y = window.scrollY;
+    onScroll(() => {
+      const y = scrollTop();
       dockWrap.classList.toggle("is-hidden", y > lastY && y > 120);
       lastY = y;
-    }, { passive: true });
+    });
   }
 
-  // ─── View tabs ────────────────────────────────────────────────────────────
-  const viewTabs    = document.querySelectorAll('.pp__view-tab');
-  const viewPanels  = document.querySelectorAll('.pp__view-panel');
-  const sidenavs    = document.querySelectorAll('.pp__sidenav[data-sidenav]');
-  const leadLinks   = document.querySelectorAll('.pp__sidenav-link--lead');
-
-  viewTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const view = tab.dataset.view;
-      viewTabs.forEach(t => {
-        t.classList.toggle('is-active', t.dataset.view === view);
-        t.setAttribute('aria-selected', String(t.dataset.view === view));
+  // ─── Share button copies URL ──────────────────────────────────────────────
+  const shareBtn = document.getElementById('cs-share-btn');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const orig = shareBtn.textContent;
+        shareBtn.textContent = 'Copied!';
+        setTimeout(() => { shareBtn.textContent = orig; }, 2000);
       });
-      viewPanels.forEach(p => p.classList.toggle('is-active', p.dataset.panel === view));
-      sidenavs.forEach(n => n.classList.toggle('is-active', n.dataset.sidenav === view));
-      leadLinks.forEach(l => { l.style.display = view === 'lead' ? '' : 'none'; });
     });
-  });
+  }
 
-  // ─── Quick read → lead view switch ───────────────────────────────────────
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.rq__switch-btn[data-switch-to]');
-    if (!btn) return;
-    const view = btn.dataset.switchTo;
+  // ─── Left sidenav — active link + sliding indicator ───────────────────────
+  const SPY_OFFSET = 120;
+
+  function buildSidenav(nav) {
+    const indicator = nav.querySelector('.pp__sidenav-indicator');
+    const pairs = [...nav.querySelectorAll('.pp__sidenav-link, .pp__sidenav-rlink')]
+      .map(link => ({ link, section: document.getElementById(link.getAttribute('href').slice(1)) }))
+      .filter(p => p.section);
+    if (!pairs.length) return null;
+
+    function setActive(link) {
+      pairs.forEach(p => p.link.classList.toggle('is-active', p.link === link));
+      // Links measure 0 while their nav is display:none — only move when visible
+      if (indicator && link && link.offsetHeight) {
+        indicator.style.top = (link.offsetTop + link.offsetHeight / 2 - indicator.offsetHeight / 2) + 'px';
+      }
+    }
+
+    function sync() {
+      if (!nav.classList.contains('is-active')) return;
+      let active = pairs[0];
+      for (const p of pairs) {
+        if (p.section.getBoundingClientRect().top <= SPY_OFFSET) active = p;
+      }
+      setActive(active.link);
+    }
+
+    pairs.forEach(({ link, section }) => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        setActive(link);
+        const base = isWin ? 0 : scroller.getBoundingClientRect().top;
+        scrollToY(section.getBoundingClientRect().top - base + scrollTop() - 24);
+      });
+    });
+
+    return { sync };
+  }
+
+  const sidenavs = [...document.querySelectorAll('.pp__sidenav[data-sidenav]')];
+  const spies    = sidenavs.map(buildSidenav).filter(Boolean);
+  onScroll(() => spies.forEach(s => s.sync()));
+
+  // ─── View tabs — 30-second skim vs full deep-dive ─────────────────────────
+  const viewTabs   = [...document.querySelectorAll('.pp__view-tab')];
+  const viewPanels = [...document.querySelectorAll('.pp__view-panel')];
+
+  function setView(view) {
     viewTabs.forEach(t => {
-      t.classList.toggle('is-active', t.dataset.view === view);
-      t.setAttribute('aria-selected', String(t.dataset.view === view));
+      const on = t.dataset.view === view;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
     });
     viewPanels.forEach(p => p.classList.toggle('is-active', p.dataset.panel === view));
     sidenavs.forEach(n => n.classList.toggle('is-active', n.dataset.sidenav === view));
-    leadLinks.forEach(l => { l.style.display = ''; });
-    document.getElementById('scroll-wrap')?.scrollTo({ top: 0, behavior: 'smooth' });
+    // Indicator offsets are only measurable once the nav is on screen
+    requestAnimationFrame(() => spies.forEach(s => s.sync()));
+  }
+
+  viewTabs.forEach(tab => tab.addEventListener('click', () => setView(tab.dataset.view)));
+
+  // "Switch to design lead view" link at the end of the quick read, and the
+  // cause-list rows, which jump straight to their matter in the full view.
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-switch-to]');
+    if (!btn) return;
+    e.preventDefault();
+    setView(btn.dataset.switchTo);
+
+    const href = btn.getAttribute('href') || '';
+    const target = href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
+    if (!target) return scrollToY(0);
+
+    // The panel has only just been shown — measure after it lays out
+    requestAnimationFrame(() => {
+      const base = isWin ? 0 : scroller.getBoundingClientRect().top;
+      scrollToY(target.getBoundingClientRect().top - base + scrollTop() - 24);
+      // Smooth scrolling can settle after the last scroll event fires
+      setTimeout(() => spies.forEach(s => s.sync()), 700);
+    });
   });
 
-  // ─── Sidenav indicator helper ─────────────────────────────────────────────
-  function moveIndicator(indicator, activeLink) {
-    if (!indicator || !activeLink) return;
-    const top = activeLink.offsetTop + activeLink.offsetHeight / 2 - indicator.offsetHeight / 2;
-    indicator.style.top = top + "px";
-  }
-
-  // ─── Lead nav scroll spy ──────────────────────────────────────────────────
-  const sideLinks     = document.querySelectorAll(".pp__sidenav-link");
-  const leadIndicator = document.querySelector(".pp__sidenav[data-sidenav='lead'] .pp__sidenav-indicator");
-
-  if (sideLinks.length) {
-    const sectionIds = [...sideLinks].map(a => a.getAttribute("href").replace("#", ""));
-    const sections   = sectionIds.map(sid => document.getElementById(sid)).filter(Boolean);
-
-    function setLeadActive(link) {
-      sideLinks.forEach(a => a.classList.toggle("is-active", a === link));
-      moveIndicator(leadIndicator, link);
-    }
-
-    function onScroll() {
-      const offset = 120;
-      let active = sections[0];
-      for (const sec of sections) {
-        if (sec.getBoundingClientRect().top <= offset) active = sec;
-      }
-      const activeLink = [...sideLinks].find(a => a.getAttribute("href") === `#${active.id}`);
-      setLeadActive(activeLink);
-    }
-
-    sideLinks.forEach(link => {
-      link.addEventListener("click", () => setLeadActive(link));
-    });
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-  }
-
-  // ─── Recruiter nav click active ───────────────────────────────────────────
-  const recruiterLinks    = document.querySelectorAll(".pp__sidenav-rlink");
-  const recruiterIndicator = document.querySelector(".pp__sidenav[data-sidenav='recruiter'] .pp__sidenav-indicator");
-
-  function setRecruiterActive(link) {
-    recruiterLinks.forEach(a => a.classList.toggle("is-active", a === link));
-    moveIndicator(recruiterIndicator, link);
-  }
-
-  if (recruiterLinks.length) {
-    const rSectionIds = [...recruiterLinks].map(a => a.getAttribute("href").replace("#", ""));
-    const rSections   = rSectionIds.map(sid => document.getElementById(sid)).filter(Boolean);
-
-    function onRecruiterScroll() {
-      const offset = 120;
-      let active = rSections[0];
-      for (const sec of rSections) {
-        if (sec.getBoundingClientRect().top <= offset) active = sec;
-      }
-      const activeLink = [...recruiterLinks].find(a => a.getAttribute("href") === `#${active.id}`);
-      if (activeLink) setRecruiterActive(activeLink);
-    }
-
-    recruiterLinks.forEach(link => {
-      link.addEventListener("click", () => setRecruiterActive(link));
-    });
-
-    window.addEventListener("scroll", onRecruiterScroll, { passive: true });
-
-    // Initial position
-    requestAnimationFrame(() => {
-      const first = document.querySelector(".pp__sidenav-rlink.is-active") || recruiterLinks[0];
-      setRecruiterActive(first);
-    });
-  }
+  requestAnimationFrame(() => spies.forEach(s => s.sync()));
 });

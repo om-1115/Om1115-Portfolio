@@ -12,6 +12,7 @@ create table projects (
   color         text,
   icon_gradient text,
   accent_color  text,
+  thumb         text,
   detail        jsonb,
   sort_order    int  default 0
 );

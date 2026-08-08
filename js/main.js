@@ -103,11 +103,7 @@ function initGoTop() {
   });
 }
 
-function initMouseGlow() {
-  const glow = document.createElement('div');
-  glow.className = 'mouse-glow';
-  document.body.appendChild(glow);
-
+function initCursorRing() {
   const ring = document.createElement('div');
   ring.className = 'cursor-ring';
   document.body.appendChild(ring);
@@ -121,7 +117,6 @@ function initMouseGlow() {
     my = e.clientY;
     if (!visible) {
       visible = true;
-      glow.classList.add('is-visible');
       ring.classList.add('is-visible');
     }
     const hovered = document.elementFromPoint(mx, my);
@@ -131,7 +126,6 @@ function initMouseGlow() {
 
   document.addEventListener('mouseleave', () => {
     visible = false;
-    glow.classList.remove('is-visible');
     ring.classList.remove('is-visible');
   });
 
@@ -139,11 +133,58 @@ function initMouseGlow() {
     rx += (mx - rx) * 0.10;
     ry += (my - ry) * 0.10;
 
-    glow.style.transform = `translate(${mx - 375}px,${my - 375}px)`;
     ring.style.transform = `translate(${rx - 11}px,${ry - 11}px)`;
 
     requestAnimationFrame(tick);
   })();
+}
+
+/* Shrinks the hero headline just enough that the widest cycling phrase fits on
+   one line — the cycle wrap clips overflow for the slide animation, so a phrase
+   wider than the container would otherwise get cut off at the edges. */
+function initHeroFit() {
+  const display = document.querySelector('.hero__display');
+  const wrap    = display && display.querySelector('.hero__cycle-wrap');
+  const words   = portfolio.heroCycleWords;
+  if (!display || !wrap || !words || !words.length) return;
+
+  // Offscreen probe that inherits the real italic display face
+  const probe = document.createElement('em');
+  probe.className = 'hero__cycle-word';
+  probe.style.cssText =
+    'position:absolute;visibility:hidden;white-space:nowrap;left:0;top:0;transform:none;transition:none;';
+  wrap.appendChild(probe);
+
+  const fit = () => {
+    display.style.removeProperty('--hero-fs');
+    // Below 640px the phrases are allowed to wrap, so no shrinking is needed
+    if (window.matchMedia('(max-width: 640px)').matches) return;
+
+    const cs = getComputedStyle(wrap);
+    const avail = wrap.clientWidth
+      - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    if (!avail || avail <= 0) return;
+
+    let widest = 0;
+    for (const word of words) {
+      probe.textContent = word;
+      widest = Math.max(widest, probe.getBoundingClientRect().width);
+    }
+    if (widest <= avail) return;
+
+    const base = parseFloat(getComputedStyle(display).fontSize);
+    // 0.995 absorbs sub-pixel rounding so the ends never touch the clip edge
+    display.style.setProperty('--hero-fs', `${(base * (avail / widest) * 0.995).toFixed(2)}px`);
+  };
+
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+  let raf = 0;
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fit);
+  });
 }
 
 function initCycleText() {
@@ -168,145 +209,27 @@ function initCycleText() {
   }, 2800);
 }
 
-function initFloatingChips() {
-  const container = document.querySelector('.cap-chips');
-  if (!container) return;
-
-  const chips = [...container.querySelectorAll('.cap-chip')];
-  const GAP = 8; // minimum gap between chips
-
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    const cw = container.clientWidth;
-    const ch = container.clientHeight;
-
-    // Read real dimensions after layout
-    const state = chips.map(el => ({
-      el,
-      w: el.offsetWidth,
-      h: el.offsetHeight,
-      x: 0, y: 0,
-      vx: 0, vy: 0,
-    }));
-
-    // Pack chips in rows so initial state has no overlaps
-    let rowX = GAP, rowY = GAP, rowH = 0;
-    state.forEach(s => {
-      if (rowX + s.w + GAP > cw) { rowX = GAP; rowY += rowH + GAP; rowH = 0; }
-      s.x = rowX;
-      s.y = rowY;
-      rowX += s.w + GAP;
-      rowH = Math.max(rowH, s.h);
-    });
-
-    // Random launch velocity
-    state.forEach(s => {
-      const speed = 0.5 + Math.random() * 0.6;
-      const angle = Math.random() * Math.PI * 2;
-      s.vx = Math.cos(angle) * speed;
-      s.vy = Math.sin(angle) * speed;
-    });
-
-    function resolveCollisions(cw, ch) {
-      // 3 solver iterations per frame for stability
-      for (let iter = 0; iter < 3; iter++) {
-        for (let i = 0; i < state.length; i++) {
-          const a = state[i];
-          for (let j = i + 1; j < state.length; j++) {
-            const b = state[j];
-
-            const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x) + GAP;
-            const oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y) + GAP;
-
-            if (ox <= 0 || oy <= 0) continue; // no overlap
-
-            if (ox < oy) {
-              // Push apart on X axis
-              const push = ox / 2;
-              if (a.x < b.x) { a.x -= push; b.x += push; }
-              else            { a.x += push; b.x -= push; }
-              // Swap X velocities (elastic)
-              const tmp = a.vx; a.vx = b.vx; b.vx = tmp;
-            } else {
-              // Push apart on Y axis
-              const push = oy / 2;
-              if (a.y < b.y) { a.y -= push; b.y += push; }
-              else            { a.y += push; b.y -= push; }
-              const tmp = a.vy; a.vy = b.vy; b.vy = tmp;
-            }
-          }
-        }
-
-        // Clamp to walls after each iteration
-        state.forEach(s => {
-          if (s.x < 0)            { s.x = 0;          s.vx =  Math.abs(s.vx); }
-          if (s.x + s.w > cw)     { s.x = cw - s.w;   s.vx = -Math.abs(s.vx); }
-          if (s.y < 0)            { s.y = 0;           s.vy =  Math.abs(s.vy); }
-          if (s.y + s.h > ch)     { s.y = ch - s.h;   s.vy = -Math.abs(s.vy); }
-        });
-      }
-    }
-
-    (function tick() {
-      const cw = container.clientWidth;
-      const ch = container.clientHeight;
-
-      state.forEach(s => { s.x += s.vx; s.y += s.vy; });
-
-      resolveCollisions(cw, ch);
-
-      state.forEach(s => {
-        s.el.style.transform = `translate(${Math.round(s.x)}px,${Math.round(s.y)}px)`;
-      });
-
-      requestAnimationFrame(tick);
-    })();
-  }));
-}
 
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadPortfolioData(['experience', 'testimonials']);
   const app = document.getElementById("app");
 
-  // ─── Loading screen ───────────────────────────────────────────────────────
-  const loader = document.getElementById('loader');
-  if (loader) {
-    // Split text into per-character spans with weight interpolated left→right
-    const loaderText = loader.querySelector('.loader__text');
-    if (loaderText) {
-      const chars = loaderText.textContent.split('');
-      const total = chars.length;
-      loaderText.innerHTML = chars.map((char, i) => {
-        if (char === ' ') return `<span style="display:inline-block;width:0.28em;animation:none"></span>`;
-        const weight = Math.round(200 + 700 * (i / (total - 1)));
-        const delay  = (i * 0.032).toFixed(3);
-        return `<span style="font-weight:${weight};animation-delay:${delay}s">${char}</span>`;
-      }).join('');
-    }
-
-    const bar = loader.querySelector('.loader__bar');
-    bar.addEventListener('animationend', () => {
-      sessionStorage.setItem('visited', '1');
-      loader.classList.add('is-done');
-      loader.addEventListener('transitionend', () => loader.remove(), { once: true });
-    }, { once: true });
-  }
-
+  // ─── Render immediately with static fallback data ─────────────────────────
   app.innerHTML = [
     HeroSection(portfolio),
-    `<div class="force-dark">${ProjectsGrid(portfolio, { limit: 3, viewAllUrl: 'work.html' })}</div>`,
+    ProjectsGrid(portfolio, { limit: 4, viewAllUrl: 'work.html' }),
     SkillsSection(portfolio),
-    `<div class="force-dark">${ExperienceSection(portfolio)}</div>`,
-    GallerySection(portfolio),
+    ExperienceSection(portfolio),
+    // Gallery pulled for now — GallerySection() and portfolio.carousels are
+    // still here, so putting it back is this one line.
     ShoutoutsSection(portfolio),
-    Footer(portfolio),
+    Footer(portfolio, { contact: true }),
     BottomDock(portfolio, { page: 'home' }),
   ].join("");
 
-  initHeroParticles();
-  initMouseGlow();
+  initCursorRing();
   initSmoothScroll();
   initGoTop();
-  initFloatingChips();
+  initHeroFit();
   initCycleText();
 
   // ─── Avatar click easter egg ──────────────────────────────────────────────
@@ -398,12 +321,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // ─── Shoutouts slider ────────────────────────────────────────────────────
-  const shoutSlides = document.querySelectorAll('.shout__slide');
-  const shoutDots   = document.querySelectorAll('.shout__dot');
-  const shoutPrev   = document.getElementById('shout-prev');
-  const shoutNext   = document.getElementById('shout-next');
-
-  if (shoutSlides.length && shoutPrev && shoutNext) {
+  function initShoutoutsSlider() {
+    const shoutSlides = document.querySelectorAll('.shout__slide');
+    const shoutDots   = document.querySelectorAll('.shout__dot');
+    const shoutPrev   = document.getElementById('shout-prev');
+    const shoutNext   = document.getElementById('shout-next');
+    if (!shoutSlides.length || !shoutPrev || !shoutNext) return;
     let shoutCurrent = 0;
 
     function shoutGoTo(idx) {
@@ -417,6 +340,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     shoutPrev.addEventListener('click', () => shoutGoTo(shoutCurrent - 1));
     shoutNext.addEventListener('click', () => shoutGoTo(shoutCurrent + 1));
     shoutDots.forEach((dot, i) => dot.addEventListener('click', () => shoutGoTo(i)));
+  }
+  initShoutoutsSlider();
+
+  // ─── Fetch live data from Supabase in background ──────────────────────────
+  await loadPortfolioData(['experience', 'testimonials']);
+
+  // Patch only the two sections that depend on Supabase — everything else
+  // was already rendered with static fallback data above.
+  const expEl = document.getElementById('experience');
+  if (expEl) expEl.outerHTML = ExperienceSection(portfolio);
+
+  const shoutEl = document.getElementById('shoutouts');
+  if (shoutEl) {
+    shoutEl.outerHTML = ShoutoutsSection(portfolio);
+    initShoutoutsSlider();
   }
 
   // ─── Gallery lightbox ────────────────────────────────────────────────────

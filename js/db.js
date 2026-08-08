@@ -7,19 +7,31 @@ const _db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 async function loadPortfolioData(keys) {
   const targets = keys || ['projects', 'experience', 'testimonials'];
 
-  const results = await Promise.all(targets.map(key =>
-    _db.from(key === 'testimonials' ? 'testimonials' : key)
-      .select('*')
-      .order('sort_order')
-  ));
+  // Never let a slow/unreachable DB block rendering — fall back to static data.
+  try {
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timed out after 3s')), 3000));
 
-  targets.forEach((key, i) => {
-    const { data, error } = results[i];
-    if (error) { console.error('[db] failed to load ' + key + ':', error); return; }
-    if (key === 'projects')     portfolio.projects   = (data || []).map(_toProject);
-    if (key === 'experience')   portfolio.experience = (data || []).map(_toExperience);
-    if (key === 'testimonials') portfolio.shoutouts  = data || [];
-  });
+    const results = await Promise.race([
+      Promise.all(targets.map(key =>
+        _db.from(key === 'testimonials' ? 'testimonials' : key)
+          .select('*')
+          .order('sort_order')
+      )),
+      timeout,
+    ]);
+
+    targets.forEach((key, i) => {
+      const { data, error } = results[i];
+      if (error) { console.error('[db] failed to load ' + key + ':', error); return; }
+      if (!data || !data.length) return; // keep static fallback when table is empty
+      if (key === 'projects')     portfolio.projects   = data.map(_toProject);
+      if (key === 'experience')   portfolio.experience = data.map(_toExperience);
+      if (key === 'testimonials') portfolio.shoutouts  = data;
+    });
+  } catch (err) {
+    console.error('[db] unreachable — using static data:', err.message);
+  }
 }
 
 function _toProject({ icon_gradient, accent_color, sort_order, ...r }) {

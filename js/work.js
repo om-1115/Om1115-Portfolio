@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   app.innerHTML = [
     ProjectsGrid(portfolio),
-    Footer(portfolio),
+    Footer(portfolio, { contact: true }),
     BottomDock(portfolio, { page: "work" }),
   ].join("");
 
