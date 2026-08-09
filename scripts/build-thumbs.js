@@ -44,6 +44,18 @@ const THUMBS = [
       { file: path.join(os.homedir(), 'Downloads/hpc/Screens/HP/8.1.png'), x: 0.52, top: 0.30, w: 0.21 },
     ],
   },
+  {
+    // Same phones treatment as HPC so the two mobile projects read as a pair.
+    // Sources are the scrubbed exhibits already in the repo rather than files
+    // in a Downloads folder, so this one rebuilds on any machine.
+    out: 'abha.png',
+    tint: ['#fdfbf7', '#f6ede1'],
+    kind: 'phones',
+    src: [
+      { file: path.join(ROOT, 'assets/work/abha/01-home.png'), x: 0.25, top: 0.20, w: 0.24 },
+      { file: path.join(ROOT, 'assets/work/abha/02-select-profile.png'), x: 0.52, top: 0.30, w: 0.21 },
+    ],
+  },
 ];
 
 function screenHTML(t) {
@@ -77,12 +89,23 @@ function html(t) {
 }
 
 fs.mkdirSync(OUT, { recursive: true });
+
+// Optional name filter: `node scripts/build-thumbs.js abha` rebuilds one.
+const only = process.argv[2];
+
 for (const t of THUMBS) {
+  if (only && !t.out.startsWith(only)) continue;
+
   const files = t.kind === 'phones' ? t.src.map(p => p.file) : [t.src];
-  for (const f of files) {
-    if (!fs.existsSync(f)) { console.error('missing source:', f); process.exit(1); }
-    fs.copyFileSync(f, path.join(BUILD, path.basename(f)));
+  // Some sources still live outside the repo. A missing one skips its own
+  // thumbnail rather than killing the run, so rebuilding one thumbnail does
+  // not depend on every other thumbnail's sources still being on the machine.
+  const missing = files.filter(f => !fs.existsSync(f));
+  if (missing.length) {
+    console.warn(`skip ${t.out} — missing source: ${missing.map(f => path.basename(f)).join(', ')}`);
+    continue;
   }
+  for (const f of files) fs.copyFileSync(f, path.join(BUILD, path.basename(f)));
   const page = path.join(BUILD, t.out.replace(/\.png$/, '.html'));
   fs.writeFileSync(page, html(t));
   execFileSync(CHROME, [

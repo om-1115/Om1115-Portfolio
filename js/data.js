@@ -1530,7 +1530,7 @@ const portfolio = {
       category: "Product Design",
       year: "2026",
       status: "shipped",
-      thumb: "assets/work/abha/01-home.png",
+      thumb: "assets/work/thumbs/abha.png",
       description: "A national health ID app where the hardest screen is not the health record — it is working out which member of the household is holding the phone.",
       tags: ["Gov Tech", "Health", "Identity", "Android"],
       color: "#fdf6ec",

@@ -216,7 +216,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ─── Render immediately with static fallback data ─────────────────────────
   app.innerHTML = [
     HeroSection(portfolio),
-    ProjectsGrid(portfolio, { limit: 4, viewAllUrl: 'work.html' }),
+    // No limit. A fixed count has silently dropped the newest project twice now
+    // — first Bharat SahAIyak, then ABHA — because adding a project does not
+    // touch this line, so nothing here fails when the list outgrows it.
+    ProjectsGrid(portfolio, { viewAllUrl: 'work.html' }),
     SkillsSection(portfolio),
     ExperienceSection(portfolio),
     // Gallery pulled for now — GallerySection() and portfolio.carousels are
