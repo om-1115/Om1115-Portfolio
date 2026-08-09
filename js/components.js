@@ -465,12 +465,43 @@ function GallerySection({ carousels }) {
     </section>`;
 }
 
+/* The people, shown while their quotes are still outstanding. Deliberately not
+   called "testimonials" anywhere in the markup — it credits collaborators and
+   claims nothing on their behalf. */
+function WorkedWithSection(people) {
+  const list = (people || []).filter(p => p.name);
+  if (!list.length) return '';
+  const cards = list.map(({ name, role, company, initials }) => `
+    <div class="ww__card">
+      <div class="ww__avatar" aria-hidden="true">${initials || ''}</div>
+      <div class="ww__info">
+        <span class="ww__name">${name}</span>
+        <span class="ww__role">${[role, company].filter(Boolean).join(' · ')}</span>
+      </div>
+    </div>`).join('');
+
+  return `
+    <section class="shoutouts ww" id="shoutouts">
+      <div class="shout__inner">
+        <div class="shout__header">
+          <span class="shout__label">✶ People</span>
+          <h2 class="shout__heading">Worked <em class="shout__em">with</em></h2>
+        </div>
+        <div class="ww__grid">${cards}</div>
+      </div>
+    </section>`;
+}
+
 function ShoutoutsSection({ shoutouts }) {
-  // An entry without a quote is a person whose words we do not have yet, so it
-  // does not render — and an empty set takes the whole section off the page
-  // rather than leaving an empty frame behind.
-  const withQuotes = (shoutouts || []).filter(s => s.quote && s.quote.trim());
-  if (!withQuotes.length) return '';
+  /* An entry renders as a testimonial only when it has words. Until then the
+     section still appears — as the people, not as quotes. Names, roles and
+     companies are true and can be shown; endorsements these people never gave
+     cannot, and swapping placeholder copy onto a real co-founder is exactly the
+     thing this branch exists to avoid. Each person upgrades to a full
+     testimonial the moment a quote is filled in. */
+  const all = shoutouts || [];
+  const withQuotes = all.filter(s => s.quote && s.quote.trim());
+  if (!withQuotes.length) return WorkedWithSection(all);
   const slidesHTML = withQuotes.map(({ quote, name, role, company, initials }, i) => `
     <div class="shout__slide${i === 0 ? ' is-active' : ''}" data-index="${i}">
       <blockquote class="shout__quote">${quote}"</blockquote>
