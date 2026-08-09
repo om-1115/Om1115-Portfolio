@@ -212,6 +212,15 @@ for (const project of portfolio.projects) {
   }
 }
 
+/* Stand-in testimonial copy attributed to real, named people. Warns rather than
+   fails, because it is a deliberate temporary state — but it warns on every run
+   so it cannot quietly become permanent. */
+for (const t of portfolio.shoutouts || []) {
+  if (t.placeholder && t.quote) {
+    warnings.push(`testimonial "${t.name}" — quote is STAND-IN COPY, not their words; replace before this stays up`);
+  }
+}
+
 const out = [];
 out.push(`check:content — ${checked} case file project(s) checked`);
 for (const w of warnings) out.push(`  warn  ${w}`);

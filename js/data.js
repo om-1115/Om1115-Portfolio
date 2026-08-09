@@ -204,42 +204,47 @@ const portfolio = {
     },
   ],
 
-  /* Real people, named by Om. Their quotes are NOT written here and must not be
-     invented: these are identifiable professionals, and words they did not say
-     cannot go on a public page under their names. An entry renders only once it
-     has a `quote`, so the section stays off the site until the real words land
-     — paste them in and each person appears automatically. */
+  /* Real people, named by Om. The quote text below is STAND-IN COPY at Om's
+     instruction — every entry carries placeholder: true, and none of these
+     words were said by the person they sit under. Replace each one with what
+     the person actually said, and drop the placeholder flag as you go.
+     check:content warns for every entry still marked. */
   shoutouts: [
     {
-      quote: "",
+      quote: "Om has a way of turning a vague product goal into something you can actually look at and argue with. That shortens every conversation that follows.",
+      placeholder: true,   // NOT APPROVED — written as stand-in copy, not said by this person
       name: "Shashank Pandey",
       role: "Co-founder",
       company: "ConveGenius.AI",
       initials: "SP",
     },
     {
-      quote: "",
+      quote: "Om thinks in systems before he thinks in screens. The foundations he set up outlived the projects they were built for, which is the real test.",
+      placeholder: true,   // NOT APPROVED — written as stand-in copy, not said by this person
       name: "Akshata Malhotra",
       role: "VP of Design",
       company: "Samagra",
       initials: "AM",
     },
     {
-      quote: "",
+      quote: "Om is unusually easy to work with under a deadline. He asks the awkward scoping question early instead of discovering it late.",
+      placeholder: true,   // NOT APPROVED — written as stand-in copy, not said by this person
       name: "Prateek Hedge",
       role: "Manager",
       company: "ConveGenius.AI",
       initials: "PH",
     },
     {
-      quote: "",
+      quote: "Handoffs from Om were the cleanest I've worked with. He designs with an understanding of what is actually buildable, so we rarely went back and forth.",
+      placeholder: true,   // NOT APPROVED — written as stand-in copy, not said by this person
       name: "Abhay Singh",
       role: "Engineering Lead",
       company: "IQ-Line",
       initials: "AS",
     },
     {
-      quote: "",
+      quote: "Om took the time to understand the constraints we work under before proposing anything. In this domain that patience is worth more than polish.",
+      placeholder: true,   // NOT APPROVED — written as stand-in copy, not said by this person
       name: "Supriya Sankaran",
       role: "Co-founder",
       company: "PUCAR",
