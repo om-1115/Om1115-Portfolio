@@ -26,9 +26,26 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduced) { document.documentElement.classList.add('no-loader'); return; }
 
-  const seen = (() => {
-    try { return sessionStorage.getItem('visited') === '1'; } catch (e) { return false; }
+  /* The eight-second landing screen is for reloads only. Arriving from a link,
+     a typed URL or another page on the site gets the short wipe instead — a
+     visitor who has not asked for anything yet should not be held at the door,
+     and a reload is the one navigation the person deliberately triggered.
+
+     Read from the Navigation Timing entry, which reports how this document was
+     reached: 'navigate', 'reload', 'back_forward' or 'prerender'. The old
+     performance.navigation.type is the fallback for anything that predates it.
+     Back/forward is not a reload — bfcache restores are cleared in pageshow. */
+  const isReload = (() => {
+    try {
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (nav && nav.type) return nav.type === 'reload';
+      return performance.navigation && performance.navigation.type === 1;
+    } catch (e) { return false; }
   })();
+
+  // `seen` now only decides whether the session has been visited at all; the
+  // full loader is gated on the reload above, not on this.
+  const seen = !isReload;
 
 
   // A running figure, articulated rather than flip-booked: each limb is a group
@@ -86,7 +103,8 @@
   function dismiss() {
     if (done) return;
     done = true;
-    try { sessionStorage.setItem('visited', '1'); } catch (e) { /* private mode */ }
+    // Nothing to record any more — which loader runs is decided by the
+    // navigation type, not by whether this session has been here before.
     el.classList.add('is-done');
     setTimeout(() => el.remove(), OUT_MS);
   }
