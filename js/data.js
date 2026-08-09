@@ -234,14 +234,14 @@ const portfolio = {
     {
       quote: "",
       name: "Abhay Singh",
-      role: "",              // TO CONFIRM: title at IQ-Line
+      role: "Engineering Lead",
       company: "IQ-Line",
       initials: "AS",
     },
     {
       quote: "",
       name: "Supriya Sankaran",
-      role: "",              // TO CONFIRM: title at PUCAR / Agami
+      role: "Co-founder",
       company: "PUCAR",
       initials: "SS",
     },
