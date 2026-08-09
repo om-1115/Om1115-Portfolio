@@ -55,10 +55,20 @@
       const weight = Math.round(200 + 700 * (i / (all.length - 1)));
       return `<span style="font-weight:${weight};animation-delay:${(i * 0.032).toFixed(3)}s">${ch}</span>`;
     }).join('');
+    // Isometric tower — four blocks falling in alternately and stacking down.
+    // Adapted from Uiverse.io by csozidev (MIT); recoloured from its blue to
+    // the site's accent so it follows the palette instead of fighting it.
     el.innerHTML =
       `<div class="loader__content">
+         <div class="tower" aria-hidden="true">
+           ${[1, 2, 3, 4].map(n =>
+             `<div class="tower__box tower__box--${n}">
+                <div class="tower__left"></div>
+                <div class="tower__right"></div>
+                <div class="tower__top"></div>
+              </div>`).join('')}
+         </div>
          <div class="loader__text">${chars}</div>
-         <div class="loader__track"><div class="loader__bar"></div></div>
        </div>`;
   }
 

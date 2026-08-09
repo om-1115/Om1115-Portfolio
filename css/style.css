@@ -6399,3 +6399,92 @@ html.no-loader #loader {
   }
   .cf-findings__what, .cf-findings__why { width: auto; }
 }
+
+/* ─── Loading screen: isometric tower ────────────────────────────────────────
+   Adapted from Uiverse.io by csozidev (MIT) — "weak-bulldog-22". Four blocks
+   fall in alternately from left and right and stack downward on a 4s cycle.
+
+   Two changes from the original. Its fixed blue is replaced by three tones
+   mixed from --accent-red, so the loader follows the palette rather than
+   pinning a colour the rest of the site no longer uses; and `scale: 3` becomes
+   a clamp, because a hard multiplier on a 40px box is either small on a desktop
+   or overflowing on a phone. */
+.tower {
+  --tower-top:   var(--accent-red);
+  --tower-right: color-mix(in srgb, var(--accent-red) 82%, #000);
+  --tower-left:  color-mix(in srgb, var(--accent-red) 62%, #000);
+
+  width: 40px;
+  height: 50px;
+  /* The `scale` property takes a number, so it cannot be interpolated against a
+     viewport length — clamp(1.7, 0.9 + 2.2vw, 3) is invalid and silently drops
+     the whole declaration, leaving the tower at 1×. Fixed steps instead.
+     Scaling does not affect layout, so the margin below has to clear the
+     scaled height (50px × 3) plus the 30px the blocks fall, not the 50px box. */
+  scale: 2.4;
+  margin-bottom: 8rem;
+}
+
+@media (min-width: 900px) { .tower { scale: 3; } }
+@media (max-width: 480px) { .tower { scale: 1.8; margin-bottom: 6rem; } }
+
+.tower__box {
+  position: relative;
+  left: 10px;
+  opacity: 0;
+}
+
+.tower__left,
+.tower__right {
+  position: absolute;
+  width: 19px;
+  height: 5px;
+  top: 14px;
+}
+
+.tower__left {
+  background: var(--tower-left);
+  transform: skew(0deg, -25deg);
+  left: 10px;
+}
+
+.tower__right {
+  background: var(--tower-right);
+  transform: skew(0deg, 25deg);
+  left: -9px;
+}
+
+.tower__top {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--tower-top);
+  rotate: 45deg;
+  transform: skew(-20deg, -20deg);
+}
+
+.tower__box--1 { animation: tower-left  4s infinite; }
+.tower__box--2 { animation: tower-right 4s infinite 1s; }
+.tower__box--3 { animation: tower-left  4s infinite 2s; }
+.tower__box--4 { animation: tower-right 4s infinite 3s; }
+
+@keyframes tower-left {
+  0%   { z-index: 20; opacity: 0; translate: -20px -6px; }
+  20%  { z-index: 10; opacity: 1; translate: 0 0; }
+  40%  { z-index: 9;  translate: 0 4px; }
+  60%  { z-index: 8;  translate: 0 8px; }
+  80%  { z-index: 7;  opacity: 1; translate: 0 12px; }
+  100% { z-index: 5;  opacity: 0; translate: 0 30px; }
+}
+
+@keyframes tower-right {
+  0%   { z-index: 20; opacity: 0; translate: 20px -6px; }
+  20%  { z-index: 10; opacity: 1; translate: 0 0; }
+  40%  { z-index: 9;  translate: 0 4px; }
+  60%  { z-index: 8;  translate: 0 8px; }
+  80%  { z-index: 7;  opacity: 1; translate: 0 12px; }
+  100% { z-index: 5;  opacity: 0; translate: 0 30px; }
+}
+
+/* The tower is the progress indicator now, so the old bar has nothing to say */
+#loader .loader__track { display: none; }
