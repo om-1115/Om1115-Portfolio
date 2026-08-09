@@ -114,8 +114,8 @@ const portfolio = {
     // one letter of the name is set in the accent colour — index into the string
     accentIndex: 4,
     tagline: "Thoughtful by design.",
-    colophon: "built by om · v1 · © 2026",
-    ticker: ["Made in Figma", "Built with Claude Code", "Hand-written HTML, CSS and JS", "Designed in Noida", "♥"],
+    colophon: "built by om · © 2026",
+    ticker: ["Made in Figma", "Hand-written HTML, CSS and JS", "Designed in Noida", "♥"],
   },
 
   workHeading: "Handpicked",
