@@ -13,13 +13,13 @@
 
 (function () {
   const NAME = 'Om Kumar';
-  const MIN_FULL   = 8000;   // first visit in a session — hold the landing screen
+  const MIN_FULL   = 6000;   // reload only — hold the landing screen
   const MIN_QUICK  = 110;    // between pages — a glimpse, not a wait
   /* The ceiling has to sit above MIN_FULL or it wins: it is an absolute timer
-     started at the same moment, so a 5s ceiling under an 8s floor would dismiss
-     the loader at 5s and the floor would never be reached. Kept 4s clear of the
-     floor so it still does its real job — releasing the page when an asset
-     hangs — rather than becoming the thing that ends the loader normally. */
+     started at the same moment, so a ceiling below the floor would dismiss the
+     loader early and the floor would never be reached. Kept well clear of it so
+     it still does its real job — releasing the page when an asset hangs —
+     rather than becoming the thing that ends the loader normally. */
   const MAX_WAIT   = 12000;
   const OUT_MS     = 820;    // must match the #loader transition in the CSS
 
