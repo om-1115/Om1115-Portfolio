@@ -1794,6 +1794,12 @@ const portfolio = {
             // patient research and his findings replace these. check:content
             // fails while any persona carries source: 'placeholder' — a portfolio
             // presenting invented personas as findings fails at the interview.
+            // Hidden until the real research replaces these. The "Not research"
+            // banner is gone, so this flag is now the only thing standing
+            // between four invented personas and a reader who takes them for
+            // findings — check:content fails if they are made visible while
+            // still marked placeholder.
+            hidden: true,
             placeholder: true,
             note: "Placeholder — synthesised from the file's mock data and deployment context so the case study could be built before the real research landed. These are not findings.",
             items: [

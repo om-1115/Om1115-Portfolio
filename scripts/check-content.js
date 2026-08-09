@@ -172,14 +172,18 @@ for (const project of portfolio.projects) {
     const items = cf.personas.items || [];
     if (!items.length) errors.push(`${p} — personas block with no personas`);
     const fake = items.filter(x => x.source === 'placeholder');
-    if (fake.length) {
+    if (fake.length && !cf.personas.hidden) {
+      // visible + invented is the failure case: nothing on the page tells a
+      // reader these are not findings
       errors.push(
-        `${p} — ${fake.length} of ${items.length} personas are still source:'placeholder' ` +
-        `(${fake.map(x => x.name.split(',')[0]).join(', ')}). Replace with real research before publishing.`
+        `${p} — ${fake.length} of ${items.length} personas are source:'placeholder' and VISIBLE ` +
+        `(${fake.map(x => x.name.split(',')[0]).join(', ')}). Replace with real research, or set hidden: true.`
       );
-    }
-    if (fake.length && !cf.personas.note) {
-      errors.push(`${p} — placeholder personas with no note explaining they are not findings`);
+    } else if (fake.length) {
+      warnings.push(
+        `${p} — ${fake.length} placeholder persona(s) held back by hidden: true; ` +
+        `replace with real research to publish the section`
+      );
     }
   }
 

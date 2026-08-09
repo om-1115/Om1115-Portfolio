@@ -1875,18 +1875,13 @@ function CaseFileBody(cf, helpers) {
     </section>`;
   }
 
-  /* Personas. When they are scaffolding rather than research, the page says so
-     in a banner the reader cannot miss — presenting invented personas as
-     findings is the failure this whole block exists to prevent. check:content
-     refuses to pass while any of them is still marked placeholder. */
-  if (cf.personas) {
+  /* Personas. Hidden while they are still scaffolding rather than research:
+     the section renders nothing until hidden is lifted, which is what keeps
+     invented personas from reading as findings now that they carry no banner.
+     check:content fails if placeholder personas are ever made visible. */
+  if (cf.personas && !cf.personas.hidden) {
     nav.push(['#cs-personas', cf.personas.heading]);
-    const placeholder = cf.personas.placeholder ||
-      (cf.personas.items || []).some(p => p.source === 'placeholder');
     html += `${sectionOpen(cf.personas.heading, 'cs-personas')}
-      ${placeholder ? `<p class="cf-persona__warn" role="note">
-        <strong>Not research.</strong> ${cf.personas.note}
-      </p>` : ''}
       <div class="cf-personas">${cf.personas.items.map(p => `
         <div class="cf-persona${p.source === 'placeholder' ? ' is-placeholder' : ''}">
           <p class="cf-persona__name">${p.name}</p>
