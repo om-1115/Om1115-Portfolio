@@ -466,7 +466,12 @@ function GallerySection({ carousels }) {
 }
 
 function ShoutoutsSection({ shoutouts }) {
-  const slidesHTML = shoutouts.map(({ quote, name, role, company, initials }, i) => `
+  // An entry without a quote is a person whose words we do not have yet, so it
+  // does not render — and an empty set takes the whole section off the page
+  // rather than leaving an empty frame behind.
+  const withQuotes = (shoutouts || []).filter(s => s.quote && s.quote.trim());
+  if (!withQuotes.length) return '';
+  const slidesHTML = withQuotes.map(({ quote, name, role, company, initials }, i) => `
     <div class="shout__slide${i === 0 ? ' is-active' : ''}" data-index="${i}">
       <blockquote class="shout__quote">${quote}"</blockquote>
       <div class="shout__person">
@@ -478,7 +483,7 @@ function ShoutoutsSection({ shoutouts }) {
       </div>
     </div>`).join('');
 
-  const dotsHTML = shoutouts.map((_, i) =>
+  const dotsHTML = withQuotes.map((_, i) =>
     `<span class="shout__dot${i === 0 ? ' is-active' : ''}" data-dot="${i}"></span>`
   ).join('');
 

@@ -204,41 +204,46 @@ const portfolio = {
     },
   ],
 
+  /* Real people, named by Om. Their quotes are NOT written here and must not be
+     invented: these are identifiable professionals, and words they did not say
+     cannot go on a public page under their names. An entry renders only once it
+     has a `quote`, so the section stays off the site until the real words land
+     — paste them in and each person appears automatically. */
   shoutouts: [
     {
-      quote: "Om's designs are always clear and easy to implement. We rarely had to go back and forth, which made development significantly smoother.",
-      name: "Arjun Mehta",
-      role: "Frontend Engineer",
+      quote: "",
+      name: "Shashank Pandey",
+      role: "Co-founder",
       company: "ConveGenius.AI",
+      initials: "SP",
+    },
+    {
+      quote: "",
+      name: "Akshata Malhotra",
+      role: "VP of Design",
+      company: "Samagra",
       initials: "AM",
     },
     {
-      quote: "Working with Om felt seamless. He thinks in systems — every decision he made scaled well across the product and saved us rework down the line.",
-      name: "Priya Nair",
-      role: "Product Manager",
-      company: "Samagra",
-      initials: "PN",
-    },
-    {
-      quote: "Om approaches design with strong strategic thinking and a clear sense of direction. His instinct for what users actually need is sharp.",
-      name: "Rahul Verma",
-      role: "Engineering Lead",
-      company: "IQ-Line",
-      initials: "RV",
-    },
-    {
-      quote: "The token system Om built for us became the foundation every team now works from. It's one of those rare pieces of work that keeps giving.",
-      name: "Sneha Kulkarni",
-      role: "Design Lead",
-      company: "Samagra",
-      initials: "SK",
-    },
-    {
-      quote: "Om is the kind of designer who makes engineers feel heard. He cares about feasibility as much as aesthetics — genuinely great to work with.",
-      name: "Dev Sharma",
-      role: "Full-Stack Developer",
+      quote: "",
+      name: "Prateek Hedge",
+      role: "Manager",
       company: "ConveGenius.AI",
-      initials: "DS",
+      initials: "PH",
+    },
+    {
+      quote: "",
+      name: "Abhay Singh",
+      role: "",              // TO CONFIRM: title at IQ-Line
+      company: "IQ-Line",
+      initials: "AS",
+    },
+    {
+      quote: "",
+      name: "Supriya Sankaran",
+      role: "",              // TO CONFIRM: title at PUCAR / Agami
+      company: "PUCAR",
+      initials: "SS",
     },
   ],
 
