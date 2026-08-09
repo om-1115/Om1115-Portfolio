@@ -6,14 +6,15 @@ function BottomDock({ name, email, resume }, { page = 'home', contactHref = '#co
   const isWork  = page === 'work';
   const isAbout = page === 'about';
   const isPlay  = page === 'play';
-  const homeHref = (isWork || isAbout || isPlay) ? 'index.html' : '#top';
+  const isType  = page === 'type';
+  const homeHref = (isWork || isAbout || isPlay || isType) ? 'index.html' : '#top';
 
   return `
     <div class="dock-wrap" id="dock-wrap">
       <nav class="dock" aria-label="Site navigation">
         <a class="dock__brand" href="${homeHref}">${name}</a>
-        <a class="dock__link${!isWork && !isAbout && !isPlay ? ' is-active' : ''}" href="${homeHref}">
-          ${!isWork && !isAbout && !isPlay ? '<span class="dock__bullet"></span>' : ''}Home
+        <a class="dock__link${!isWork && !isAbout && !isPlay && !isType ? ' is-active' : ''}" href="${homeHref}">
+          ${!isWork && !isAbout && !isPlay && !isType ? '<span class="dock__bullet"></span>' : ''}Home
         </a>
         <a class="dock__link${isWork ? ' is-active' : ''}" href="work.html">
           ${isWork ? '<span class="dock__bullet"></span>' : ''}Work
@@ -23,6 +24,9 @@ function BottomDock({ name, email, resume }, { page = 'home', contactHref = '#co
         </a>
         <a class="dock__link${isPlay ? ' is-active' : ''}" href="play.html">
           ${isPlay ? '<span class="dock__bullet"></span>' : ''}Play here
+        </a>
+        <a class="dock__link${isType ? ' is-active' : ''}" href="type.html">
+          ${isType ? '<span class="dock__bullet"></span>' : ''}Type lab
         </a>
         <a class="dock__link" href="${contactHref}">Contact</a>
         <a class="dock__resume" href="${(resume && resume.file) || '#'}" target="_blank" rel="noopener"
