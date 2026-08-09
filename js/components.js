@@ -1846,6 +1846,55 @@ function CaseFileBody(cf, helpers) {
     </section>`;
   }
 
+  // Audit table — findings in work the designer shipped themselves. Numbered
+  // so the prose can point at a row.
+  if (cf.findings) {
+    nav.push(['#cs-findings', cf.findings.heading]);
+    html += `${sectionOpen(cf.findings.heading, 'cs-findings')}
+      ${cf.findings.note ? `<p class="cs-section__body cf-findings__note">${cf.findings.note}</p>` : ''}
+      <div class="cf-findings">
+        <table class="cf-findings__table">
+          <thead><tr>${(cf.findings.columns || []).map(c => `<th>${c}</th>`).join('')}</tr></thead>
+          <tbody>${cf.findings.rows.map(r => `
+            <tr>
+              <td class="cf-findings__n" data-k="#">${r[0]}</td>
+              <td class="cf-findings__what" data-k="Finding">${r[1]}</td>
+              <td class="cf-findings__why" data-k="Cost">${r[2]}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </section>`;
+  }
+
+  // The counterweight to the audit. A case study that only lists defects in its
+  // own work reads as performance rather than judgement.
+  if (cf.worked) {
+    nav.push(['#cs-worked', cf.worked.heading]);
+    html += `${sectionOpen(cf.worked.heading, 'cs-worked')}
+      <ul class="cf-worked">${cf.worked.items.map(i => `<li>${i}</li>`).join('')}</ul>
+    </section>`;
+  }
+
+  /* Personas. When they are scaffolding rather than research, the page says so
+     in a banner the reader cannot miss — presenting invented personas as
+     findings is the failure this whole block exists to prevent. check:content
+     refuses to pass while any of them is still marked placeholder. */
+  if (cf.personas) {
+    nav.push(['#cs-personas', cf.personas.heading]);
+    const placeholder = cf.personas.placeholder ||
+      (cf.personas.items || []).some(p => p.source === 'placeholder');
+    html += `${sectionOpen(cf.personas.heading, 'cs-personas')}
+      ${placeholder ? `<p class="cf-persona__warn" role="note">
+        <strong>Not research.</strong> ${cf.personas.note}
+      </p>` : ''}
+      <div class="cf-personas">${cf.personas.items.map(p => `
+        <div class="cf-persona${p.source === 'placeholder' ? ' is-placeholder' : ''}">
+          <p class="cf-persona__name">${p.name}</p>
+          <p class="cf-persona__body">${p.body}</p>
+        </div>`).join('')}</div>
+    </section>`;
+  }
+
   if (cf.differently) {
     nav.push(['#cs-differently', cf.differently.heading]);
     html += `${sectionOpen(cf.differently.heading, 'cs-differently')}

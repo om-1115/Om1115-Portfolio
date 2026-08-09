@@ -35,3 +35,29 @@ Status values: `pending` · `cleared` · `refused` · `not needed`.
    evidence.
 3. Footer disclaimer, required regardless: this is a personal portfolio and does
    not represent ConveGenius or any government body.
+
+---
+
+# CLEARANCE — ABHA Patient App case study
+
+A patient app under India's ABDM, deployed against a named community health
+centre. The exhibits are screens of a shipped government health product carrying
+mock patient identities, so the questions here are about health data optics as
+much as about permission. Same status values as above.
+
+| # | Item | Why it needs sign-off | Owner | Status |
+|---|------|----------------------|-------|--------|
+| 15 | Naming the **client, programme and ABDM/ABHA** publicly | Determines whether this can be a named case study at all. Fallback if refused: "a state health department in North India", keeping the constraints specific and the client generic. | Om / client | pending |
+| 16 | Naming **Mohanlalganj CHC** on screens showing a named patient and a diagnosis | This is the composition that reads worst in health — a real facility beside a named person and a lab result, even with invented data. Default if unclear: rename the facility in the exhibits and say so in the caption. | Om / client | pending |
+| 17 | Publishing the **audit chapter** (8 findings in shipped work) | Findings in a live government product, published by the designer who made it. Verified in the file, but the client may reasonably want notice. | Om / client | pending |
+| 18 | Stating the **research method and sample** | Currently unstated. Numbers, locations, duration and languages are needed before the research claim means anything. | Om | pending |
+| 19 | **Exhibit 02** — real-format mobile number | Already scrubbed: the number was painted over in the PNG and replaced with an obviously fictional one. Recorded here so the scrub is auditable rather than invisible. | Om | done |
+| 20 | Remaining **mock-data drift** across exhibits — four identities in one file, every record row repeating `Report ID: 12345` and one timestamp | Cosmetic rather than legal, but it reads as carelessness in a case study arguing for care. Fix in the source file and re-export. | Om | pending |
+
+## Blocking, independent of clearance
+
+The four personas are `source: 'placeholder'` — scaffolding synthesised from the
+file's mock data, not Om's research. `scripts/check-content.js` fails while any
+of them is still marked placeholder, and the page renders a dashed banner
+reading "Not research." Replace them with the real findings before publishing;
+presenting invented personas as research is the failure this guard exists for.

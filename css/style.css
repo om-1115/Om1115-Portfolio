@@ -6236,3 +6236,166 @@ html.no-loader #loader {
   .rz, .rz__panel { transition: none; }
   .rz__panel { transform: none; }
 }
+
+/* ─── ABHA case study: phone exhibits, audit table, personas ─────────────────
+   The screens are evidence, so they are framed like evidence. A flat Android
+   bezel at the file's own proportions — no perspective, no reflection, no
+   gloss. That treatment is the current portfolio default and it reads as
+   decoration on a health app built for people at a rural clinic counter. */
+.cf-ex__item--portrait .story-fig__media,
+.cf-ex__item--portrait figure > img {
+  border: 6px solid #15181d;
+  border-radius: 18px;
+  background: #15181d;
+  box-shadow: 0 14px 34px -20px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+}
+
+/* ─── Audit table ─────────────────────────────────────────────────────────── */
+.cf-findings__note {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.cf-findings {
+  overflow-x: auto;          /* the page itself must never scroll sideways */
+  margin-top: 1.5rem;
+}
+
+.cf-findings__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.cf-findings__table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 1rem 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.cf-findings__table td {
+  padding: 0.95rem 1rem 0.95rem 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.cf-findings__n {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-red-ink);
+  width: 2.5rem;
+}
+
+.cf-findings__what { color: var(--text); width: 46%; }
+.cf-findings__why  { color: var(--text-muted); }
+
+/* ─── What worked ─────────────────────────────────────────────────────────── */
+.cf-worked {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.4rem;
+}
+
+.cf-worked li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.cf-worked li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent-red);
+}
+
+/* ─── Personas ────────────────────────────────────────────────────────────── */
+/* The banner is deliberately loud. A reader must not be able to mistake
+   scaffolding for research findings, and a quiet caption can be skimmed past. */
+.cf-persona__warn {
+  margin-top: 1.3rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px dashed var(--accent-red);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent-red) 6%, transparent);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.cf-personas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 1.1rem;
+  margin-top: 1.4rem;
+}
+
+.cf-persona {
+  padding: 1.15rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.cf-persona.is-placeholder {
+  border-style: dashed;
+}
+
+.cf-persona__name {
+  font-weight: 650;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 0.45rem;
+}
+
+.cf-persona__body {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+@media (max-width: 720px) {
+  .cf-findings__table,
+  .cf-findings__table thead,
+  .cf-findings__table tbody,
+  .cf-findings__table tr,
+  .cf-findings__table td { display: block; width: 100%; }
+  .cf-findings__table thead { display: none; }
+  .cf-findings__table tr {
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .cf-findings__table td {
+    border: 0;
+    padding: 0.15rem 0;
+  }
+  /* label each cell from its own data-k, so the keys cannot drift out of sync
+     with the column order the way nth-of-type would */
+  .cf-findings__table td::before {
+    content: attr(data-k) '  ';
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .cf-findings__what, .cf-findings__why { width: auto; }
+}

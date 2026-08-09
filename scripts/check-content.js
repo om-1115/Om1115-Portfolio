@@ -163,12 +163,43 @@ for (const project of portfolio.projects) {
     if (!row.scope) errors.push(`${p} — ledger row ${row.no} has no scope`);
   }
 
-  // Anything attributed to PUCAR's published position needs a live citation
+  /* Personas must be research before they can ship. A portfolio that presents
+     invented personas as findings fails the moment an interviewer asks how many
+     people were spoken to, so a placeholder is a build failure rather than a
+     warning — the one check here allowed to block on unfinished thinking rather
+     than on a formatting slip. */
+  if (cf.personas) {
+    const items = cf.personas.items || [];
+    if (!items.length) errors.push(`${p} — personas block with no personas`);
+    const fake = items.filter(x => x.source === 'placeholder');
+    if (fake.length) {
+      errors.push(
+        `${p} — ${fake.length} of ${items.length} personas are still source:'placeholder' ` +
+        `(${fake.map(x => x.name.split(',')[0]).join(', ')}). Replace with real research before publishing.`
+      );
+    }
+    if (fake.length && !cf.personas.note) {
+      errors.push(`${p} — placeholder personas with no note explaining they are not findings`);
+    }
+  }
+
+  /* A block that leans on someone else's published position needs a live
+     citation. The requirement follows the claim, not the block name: a premise
+     arguing from a count of the designer's own file is attributing nothing and
+     has nothing to cite. Mark the ones that borrow with attributed: true.
+     A citation that is present is validated either way. */
   for (const [key, block] of [['premise', cf.premise], ['levers', cf.levers]]) {
     if (!block) continue;
     const c = block.citation;
-    if (!c || !c.href || !c.label) errors.push(`${p} — ${key} has no citation URL`);
-    else if (!/^https?:\/\//.test(c.href)) errors.push(`${p} — ${key} citation href is not a URL`);
+    if (block.attributed && (!c || !c.href || !c.label)) {
+      errors.push(`${p} — ${key} is marked attributed but has no citation URL`);
+    }
+    if (c && c.href && !/^https?:\/\//.test(c.href)) {
+      errors.push(`${p} — ${key} citation href is not a URL`);
+    }
+    if (c && (!c.label || !c.href)) {
+      errors.push(`${p} — ${key} has a citation missing its label or href`);
+    }
   }
 
   // Every lever needs both halves of the mapping

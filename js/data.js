@@ -416,6 +416,8 @@ const portfolio = {
           ],
           premise: {
             heading: "The premise",
+            // leans on PUCAR's published framing, so check:content demands the citation
+            attributed: true,
             body: [
               "Nobody arrives at a district court by choice. They arrive with a dispute, a bundle of documents, a day taken off work, and no map of what happens next. PUCAR — the Public Collective for Avoidance and Resolution of Disputes, anchored by Agami — is a non-profit mission rebuilding court software around that person rather than around the register.",
               "The framing I designed against is PUCAR's own, published as the third part of a Bar &amp; Bench series by Supriya Sankaran and Siddarth Raman. Read that way, delay is not one large failure — it is an accumulation of small, ordinary frictions, each of which can cost a listed hearing. Which makes faster case disposal the wrong design target. The target is removing the reasons a hearing cannot happen on the day it was listed.",
@@ -622,6 +624,7 @@ const portfolio = {
             },
           ],
           levers: {
+            attributed: true,
             heading: "How the design traced back to strategy",
             intro: "PUCAR's published analysis names five levers for court transformation. The levers are theirs; what follows is how the design responded to each — including the one it cannot touch.",
             citation: {
@@ -1515,6 +1518,319 @@ const portfolio = {
               "Ask the question, then show the parameter. If the interface has to name a token, it can afford one line saying what the token does.",
               "An upstream change is a decision. Track whether a person decided, not whether a person looked.",
               "Design the degraded state early. On a system assembled from other people's services, it is not an edge case — it is a Tuesday.",
+            ],
+          },
+        },
+      },
+    },
+
+    {
+      id: "11",
+      title: "ABHA Patient App",
+      category: "Product Design",
+      year: "2026",
+      status: "shipped",
+      thumb: "assets/work/abha/01-home.png",
+      description: "A national health ID app where the hardest screen is not the health record — it is working out which member of the household is holding the phone.",
+      tags: ["Gov Tech", "Health", "Identity", "Android"],
+      color: "#fdf6ec",
+      iconGradient: "linear-gradient(135deg,#c2410c,#ea8c4f)",
+      accentColor: "#c2410c",
+      detail: {
+        role: "Product Designer · Research",
+        challenge: "One phone serves a whole household, and ABHA accounts duplicate across the facilities that create them. So before the app can show anyone a health record, it has to answer a question no health app expects to be hard: whose record is this, and is the person holding the phone allowed to see it? Get that wrong and the failure is not a bad experience — it is one person's medical history shown to another.",
+        outcome: "A patient app for India's ABDM covering four capabilities — multiple ABHA accounts on one device, nearby facilities, health records fetched from linked facilities, and a Scan &amp; Share flow that turns a QR into a queue token at the counter. Shipped, Hindi and English, deployed against a community health centre in Uttar Pradesh.",
+        // NO INVENTED STATS. This case study's whole argument is a counted one —
+        // 33 of 86 screens — so a fabricated adoption number sitting beside it
+        // would undo the only thing that makes the argument trustworthy. The
+        // real numbers are in §8 of the brief and are still open; until they
+        // land, the counts below are recomputed from the exhibit manifest by
+        // check:content rather than typed in by hand.
+        stats: [
+          { value: "86", label: "Screens in the file, across 9 sections" },
+          { value: "38%", label: "Of them identity and access, not health" },
+          { value: "7", label: "Screens for health records, the nominal purpose" },
+        ],
+        frames: [
+          { type: "mobile", label: "Select Your Profile — two identical rows, no way to tell them apart" },
+          { type: "mobile", label: "Home — four shortcuts, three carrying the same subtitle" },
+          { type: "mobile", label: "Scan &amp; Share — QR at the counter to token in four screens" },
+          { type: "mobile", label: "Health records — five lab states, two of them the same green" },
+        ],
+        recruiter: {
+          role: "Product Designer · Research and design",
+          timeline: "Shipped — dates to confirm",
+          liveAt: "",
+          domain: "Gov tech · Public health · ABDM",
+          platform: "Android · 412×917 · Hindi and English",
+          team: "Scope to confirm — Om did the research and the design; illustration ownership unconfirmed",
+          problem: "A household shares one phone and ABHA accounts duplicate across facilities. The app has to establish identity before it can safely show a health record, and the failure mode is showing one person's records to another.",
+          shipped: "A four-capability patient app — multiple ABHA accounts, nearby facilities, fetched health records, and a QR-to-token counter flow — deployed in Hindi and English.",
+          owned: ["Patient research", "Information architecture", "Identity &amp; profile system", "Scan &amp; Share flow", "Health records", "Visual system"],
+          bullets: [
+            "The file argues its own thesis by its proportions. Of 86 screens, 33 — 38% — are identity and access: PIN setup, profile management, profile selection. Health Records, what the app is nominally for, is 7. That ratio is not bloat; it is the honest shape of a shared-device problem.",
+            "The security PIN is not protecting against a stranger who steals the phone — the phone is already OTP-verified. It is protecting against the household. Saying that out loud is what turns 12 screens of apparent security boilerplate into a design position.",
+            "The profile-merge screen cannot support the decision it asks for. Two rows read character-for-character identically — same name, same age, same gender — and those three fields are everything the screen shows. Merging is irreversible and there is no confirmation step before it.",
+            "Research was with patients only, and the Scan &amp; Share flow ends at a registration clerk who was never studied. Half of that interaction is designed on assumption, and the case study says so rather than quietly showing the happy path.",
+            "The app fetches records across facilities and ABDM governs that with consent artefacts. A notification tells the patient their details were shared with a hospital group — and there is no screen anywhere to review, scope or revoke it. That gap is the largest one in the file.",
+          ],
+        },
+        caseFile: {
+          causeList: {
+            label: "Contents",
+            heading: "Three chapters, one line each",
+            note: "An identity system, a counter flow, and an audit of what shipped.",
+          },
+          heroExhibits: [
+            { id: "A", src: "assets/work/abha/02-select-profile.png", alt: "Profile selection showing two character-identical rows for the same 16-year-old — same name, age and gender — with no facility, date or account suffix to tell them apart, above Merge Profiles and Next buttons of equal weight", caption: "The screen the argument rests on — a merge decision with nothing to decide on", clearance: "scrubbed", redactionNote: "the real-format mobile number in the subtext was painted over and replaced with an obviously fictional one", ratio: "824 / 1834" },
+            { id: "B", src: "assets/work/abha/01-home.png", alt: "Home screen where three of the four shortcut cards carry the identical subtitle 'Get your ABHA Account' and the alert component still reads 'This is a Heading'", caption: "Home — placeholder copy in the primary navigation of a shipped app", clearance: "review", redactionNote: "shows a mock account holder name; facility naming still to be cleared", ratio: "824 / 1834" },
+          ],
+          premise: {
+            heading: "The premise",
+            body: [
+              "An ABHA patient app under India's Ayushman Bharat Digital Mission. Four capabilities: hold multiple ABHA accounts on one phone, find nearby facilities, fetch health records from linked facilities, and generate a code to show the clerk at the counter instead of queueing to register.",
+              "The expected case study writes itself — health records are the product, so the record screen is the hard part. The file says otherwise, and it says it in numbers rather than in adjectives. Of 86 screens across 9 sections, 33 are identity and access: 12 on PIN setup, 14 on profile, 7 on profile selection. Health Records is 7 screens. <strong>Thirty-eight per cent of the app is about establishing who is holding the phone.</strong>",
+              "That ratio is the finding. One phone serves a household; ABHA accounts duplicate across the facilities that issue them; and the failure mode is not a dropped session but one person's medical history displayed to another. A designer who treated the identity layer as plumbing would have shipped something unsafe. The identity layer <em>is</em> the product.",
+            ],
+          },
+          ledger: {
+            heading: "Where I came in",
+            body: [
+              "Research and design both, which is rarer than it sounds and worth stating plainly rather than implying. The rows below are scope, not credit.",
+              "One boundary matters more than the others and is stated in the audit chapter too: research was conducted with <strong>patients only</strong>. The Scan &amp; Share flow ends at a registration clerk who receives the code and issues a token. That half of the interaction is designed on assumption.",
+            ],
+            columns: ["Surface", "Mode", "Scope"],
+            rows: [
+              { matter: "Patient research", mode: "Designed", scope: "Patients only — sample, method and duration to confirm" },
+              { matter: "Information architecture", mode: "Designed", scope: "9 sections, 86 screens" },
+              { matter: "Identity &amp; profile system", mode: "Designed", scope: "Multiple ABHA accounts, selection, merge, PIN" },
+              { matter: "Scan &amp; Share flow", mode: "Designed", scope: "QR, facility confirmation, token" },
+              { matter: "Health records", mode: "Designed", scope: "Five lab states, filters, detailed report" },
+              { matter: "Visual system", mode: "Contributed", scope: "67 components at 642 instances — illustration ownership to confirm" },
+            ],
+            modeKey: [
+              ["Designed", "owned end to end"],
+              ["Contributed", "owned a defined slice inside someone else's scope"],
+              ["Audited", "evaluated existing work"],
+              ["Proposed", "recommended; not adopted, or not yet"],
+            ],
+          },
+          matters: [
+            {
+              no: "001",
+              slug: "matter-001",
+              title: "The identity layer",
+              state: "Shipped",
+              mode: "Designed",
+              oneLine: "Thirty-eight per cent of the app exists to answer who is holding the phone.",
+              context: [
+                "A household shares a device. ABHA accounts duplicate because each facility that registers a patient can create one. So the app carries a profile switcher, a profile selection screen, a merge flow, and a 12-screen PIN section — and the case study's job is to explain why that is correct rather than apologise for it.",
+                "The PIN is the clearest example. The phone is already verified by OTP, so a second factor looks like security boilerplate. It is not. The PIN is not protecting the account from a stranger who steals the handset; it is protecting one household member's records from another. Once that is said, twelve screens stop looking excessive.",
+              ],
+              goals: [
+                "Make the active profile unmissable at the moment records are displayed.",
+                "Let a person resolve duplicate accounts without needing support.",
+                "Protect a dependent's records inside an adult's app.",
+              ],
+              decisions: [
+                {
+                  constraint: "One phone, several ABHA accounts, and duplicates arriving from different facilities. The person has to be able to tell two profiles apart before deciding they are the same person.",
+                  options: [
+                    "Auto-merge on a name, age and gender match",
+                    "Never merge — let duplicates accumulate",
+                    "Patient-initiated merge from a selection screen",
+                  ],
+                  chose: "Patient-initiated merge, prompted from the profile selection screen with the instruction 'Select 2 or More Profiles to Merge.'",
+                  why: "Auto-merging on name, age and gender would combine two real people who happen to match — a same-name mother and daughter, or two Deepikas at one address. Leaving duplicates alone pushes the problem to the counter, which is where the app is trying to save time.",
+                  cost: "The decision is handed to the person least equipped to make it, on a screen that gives them nothing to make it with — see the finding below. And merge is irreversible.",
+                },
+                {
+                  constraint: "The phone is already OTP-verified, so any additional factor has to justify twelve screens of setup, change and recovery.",
+                  options: [
+                    "No PIN — rely on phone possession",
+                    "Biometric only",
+                    "A PIN owned by the account holder",
+                  ],
+                  chose: "A security PIN on top of the phone OTP.",
+                  why: "The threat model is not theft. It is the household. Phone possession authenticates the device, not the person, and on a shared device those are different questions.",
+                  cost: "A PIN is one more thing to forget, which is why forgot-PIN recovery is part of the twelve screens rather than an afterthought — and recovery on a shared phone is exactly where the protection can leak.",
+                },
+              ],
+              rejected: [
+                {
+                  what: "A single merged household view — one list of everyone's records with a person filter on top.",
+                  whyNot: "It reads well on a design file and fails the actual threat model. The whole point of the identity layer is that one member's records must not be casually visible to another; a shared list with a filter makes exposure the default state and privacy an action.",
+                },
+                {
+                  what: "Biometric unlock instead of a PIN.",
+                  whyNot: "Fingerprint hardware is uneven on the devices this audience actually owns, and a fingerprint on a shared phone is enrolled by whoever set it up — usually the account holder. It would have protected the household boundary less well than the thing it replaced.",
+                },
+              ],
+              exhibits: [
+                { id: "A", src: "assets/work/abha/02-select-profile.png", alt: "Profile selection showing two character-identical rows for the same 16-year-old with no facility, date or account suffix to distinguish them", caption: "Two rows. Same name, same age, same gender. Nothing else is shown.", clearance: "scrubbed", redactionNote: "real-format mobile number painted over and replaced with a fictional one", ratio: "824 / 1834" },
+                { id: "B", src: "assets/work/abha/03-merged-confirmation.png", alt: "A dialog reading Successfully Merged — the only merge confirmation in the file, shown after the irreversible action rather than before it", caption: "The only confirmation in the merge flow arrives after the fact.", clearance: "public", ratio: "382 / 286" },
+              ],
+            },
+            {
+              no: "002",
+              slug: "matter-002",
+              title: "Scan &amp; Share",
+              state: "Shipped",
+              mode: "Designed",
+              oneLine: "Four screens replacing a registration queue — and one of them is designed blind.",
+              context: [
+                "The patient scans a QR at the facility, confirms which clinic they are at, and receives a token to show at the counter. Four screens replacing a queue is a real result, and shortness is the claim the flow makes.",
+                "It is also where the research boundary bites. The flow ends at a registration clerk who receives the code and issues the token, and research was with patients only. The counter half is designed on assumption — which is a reasonable thing to have done under the constraint, and an unreasonable thing to leave unsaid.",
+              ],
+              goals: [
+                "Get a patient from arrival to a queue position without joining the registration line.",
+                "Make the token legible across a counter, at arm's length, on a low-end screen.",
+                "Fail safely when the counter cannot or will not cooperate.",
+              ],
+              decisions: [
+                {
+                  constraint: "The patient has to hand something to a clerk, and the clerk has their own system, their own screen, and no reason to trust an unfamiliar app.",
+                  options: [
+                    "Show the full ABHA number",
+                    "Show a QR for the clerk to scan",
+                    "Issue a short numeric token",
+                  ],
+                  chose: "A short numeric token, set large — 120 at the top of the confirmation card.",
+                  why: "A number can be read aloud, written on a paper slip, and typed into whatever the counter already runs. A QR needs the counter to have a scanner and the will to use it.",
+                  cost: "A three-digit token carries no identity, so it only works if the counter's own system is holding the other half of the mapping — and that system was never studied.",
+                },
+              ],
+              rejected: [
+                {
+                  what: "Showing the full ABHA number at the counter for the clerk to key in.",
+                  whyNot: "It is a permanent health identifier being read aloud across a public counter. A disposable token exposes nothing if it is overheard, and the number was never the thing the counter needed.",
+                },
+                {
+                  what: "A patient-side appointment booking step before arrival.",
+                  whyNot: "It assumes the facility publishes slots and honours them. At a CHC the queue is the scheduling system, and designing around a booking model the counter does not run would have produced a flow that breaks on its first real morning.",
+                },
+              ],
+              exhibits: [
+                { id: "C", src: "assets/work/abha/04-qr-scan.png", alt: "Scan and Share step one — the camera view for scanning a facility QR code", caption: "Step 1 — QR at the counter", clearance: "public", ratio: "412 / 917" },
+                { id: "D", src: "assets/work/abha/05-token-generated.png", alt: "Token confirmation showing the number 120 set large under the facility name, with an empty image placeholder where the facility photo should be and a low-contrast outlined Done button", caption: "Step 3 — token 120. The number is right; the empty image slot and the outlined Done are not.", clearance: "review", redactionNote: "names a real community health centre — pending clearance to show the facility by name", ratio: "412 / 917" },
+              ],
+            },
+            {
+              no: "003",
+              slug: "matter-003",
+              title: "Reading my own shipped file",
+              state: "Audit",
+              mode: "Audited",
+              oneLine: "Eight findings in work I designed, ranked by what they cost the person using it.",
+              context: [
+                "This chapter audits the file I made. Every finding below was verified in the file rather than recalled, and each is stated as what it costs the reader of the screen, not as a rule it breaks.",
+                "It belongs in the case study for the same reason the 38% count does: a portfolio that only shows the intended design is asking to be taken on trust. One that shows what shipped and what it got wrong is making a checkable claim.",
+              ],
+              goals: [
+                "Separate the placeholder copy from the structural problems.",
+                "Name the one gap that is about governance rather than craft.",
+                "Say which findings are still live, rather than implying all were fixed.",
+              ],
+              decisions: [
+                {
+                  constraint: "The app fetches records across facilities, and ABDM is built on consent artefacts. A notification tells the patient that a doctor shared their details with a hospital group to discuss their treatment.",
+                  options: [
+                    "Leave consent to the ABDM gateway and stay silent in-app",
+                    "A one-off consent prompt at registration",
+                    "A consent ledger the patient can review, scope and revoke",
+                  ],
+                  chose: "Nothing — and that is the finding. The notification exists; the surface behind it does not.",
+                  why: "This is the largest gap in the file. A notification announcing that data was shared is an event in a ledger that has no ledger. The patient is told, and cannot act.",
+                  cost: "Designing it properly means a scope model — which facility, which records, for how long — and that is a product decision, not a screen. Naming the gap is worth more here than sketching a surface that hides its difficulty.",
+                },
+              ],
+              rejected: [
+                {
+                  what: "Listing the file-hygiene numbers — auto-named layers, hidden layers, duplicated frames — as audit findings.",
+                  whyNot: "They are working-file realities, not things a patient ever experiences. Ranking them beside a missing consent surface would flatten the difference between untidy and unsafe, and reads as self-flagellation rather than judgement.",
+                },
+                {
+                  what: "Designing the consent screen and showing it as the fix.",
+                  whyNot: "A screen would imply the hard part is solved. Consent scope — which facility, which records, for how long, revocable by whom — is a product decision, and a confident-looking mockup over an unanswered question is exactly the move this case study argues against.",
+                },
+              ],
+              exhibits: [
+                { id: "E", src: "assets/work/abha/06-health-records.png", alt: "Health records list showing five lab states where Report Ready and Provisional Report Ready are rendered in the same green, and every row repeats the same report ID and timestamp", caption: "Five lab states — real domain understanding, and two clinically different ones sharing a colour.", clearance: "review", redactionNote: "a named mock patient beside a named real facility and a diagnosis — pending clearance", ratio: "412 / 917" },
+                { id: "F", src: "assets/work/abha/07-language-selection.png", alt: "Language selection offering Hindi and English inside the onboarding flow, before registration rather than buried in settings", caption: "Hindi as a first-class onboarding choice, not a settings afterthought.", clearance: "public", ratio: "412 / 917" },
+              ],
+            },
+          ],
+          // Verified against the Figma file rather than recalled. Anything the
+          // build brief asserted that the file did not support was dropped —
+          // see the note in CLEARANCE.md.
+          findings: {
+            heading: "The audit",
+            note: "Each verified in the file. Status — fixed, live or deliberate — is still open for every row.",
+            columns: ["#", "Finding", "Why it costs this audience"],
+            rows: [
+              ["1", "Three of the four home shortcuts carry the identical subtitle “Get your ABHA Account” — My ABHA, My Health Records and Scan &amp; Share. Nearby Facilities has none.", "The subtitle is doing the explaining for a low-literacy audience, and it explains nothing three times out of four."],
+              ["2", "The alert component on the home screen still reads “This is a Heading / This is a detailed subtext regarding the alert.”", "Placeholder copy on the most prominent surface above the fold."],
+              ["3", "The third tab of the bottom navigation changes identity between screens — “Doctor View” on home and health records, “My ABHA” on the token screen. No Doctor View screen exists in the file.", "Not a dead link but an unstable navigation bar, which is a more serious class of problem: the persistent element is the one a person is meant to be able to trust."],
+              ["4", "Health Records and Facilities appear in both the bottom navigation and the shortcut grid, under different labels each time — “My Health Records” against “Health Records”.", "Two names for one destination is expensive for this audience specifically."],
+              ["5", "Merging is irreversible and there is no confirmation step. The flow goes from two indistinguishable rows straight to a “Successfully Merged!” dialog.", "The only dialog in the flow arrives after the act it should have guarded."],
+              ["6", "A notification reads “Dr. Alexander shared your details in the hospital's group to discuss your recent treatment” — a consent event with no consent surface behind it.", "ABDM runs on consent artefacts. The patient is informed and given nowhere to review, scope or revoke."],
+              ["7", "“Report Ready” and “Provisional Report Ready” are rendered in the same green.", "Two clinically different things share a colour, and a patient acting on a provisional result is a real risk. Status is paired with text elsewhere, so the colour-alone test does pass."],
+              ["8", "The Terms and Conditions checkbox on the registration screen is drawn pre-ticked.", "Pre-ticked consent is not consent, and this is the screen where the consent relationship starts."],
+            ],
+          },
+          worked: {
+            heading: "What worked",
+            items: [
+              "67 components at 642 instances. That is real system discipline for a file this size, and it is why the screens are consistent even where the copy is not.",
+              "The illustration set is warm, specific to the setting, and not generic stock — a rural clinic scene with people who look like the people using it.",
+              "Hindi is a first-class choice in the onboarding flow, before registration, rather than a setting to be found later.",
+              "Five lab states — sample collected, in progress, provisional report ready, report ready, sample rejected. Most consumer health apps model two. That is domain understanding.",
+              "The token number is set large and legible, which is exactly right for something read across a counter.",
+            ],
+          },
+          personas: {
+            heading: "Who this is for",
+            // BLOCKING: every persona below is scaffolding, not research. Om did
+            // patient research and his findings replace these. check:content
+            // fails while any persona carries source: 'placeholder' — a portfolio
+            // presenting invented personas as findings fails at the interview.
+            placeholder: true,
+            note: "Placeholder — synthesised from the file's mock data and deployment context so the case study could be built before the real research landed. These are not findings.",
+            items: [
+              { name: "Ramesh, 44 — the account holder", source: "placeholder", body: "Owns the phone. Registered ABHA for himself, his wife, his mother and his daughter. Reads Hindi comfortably, English haltingly. Cannot always remember which profile is active. <em>Design pressure:</em> profile switching must be unmissable at the moment records are displayed." },
+              { name: "Deepika, 16 — the dependent", source: "placeholder", body: "Taken from the file's own mock data, where she appears 21 times. Has health records, owns no device, and has no control over who sees them. <em>Design pressure:</em> a minor's records inside an adult's app is a consent question the interface has to answer rather than dodge." },
+              { name: "Kamla, 67 — the heavy user", source: "placeholder", body: "Highest healthcare need, lowest digital confidence. At the counter she hands the phone to whoever is nearest. <em>Design pressure:</em> Scan &amp; Share has to survive being operated by a stranger without exposing the record set." },
+              { name: "Suresh, 52 — who this is not for", source: "placeholder", body: "Has a paper OPD card and a working relationship with the CHC clerk. For him the app adds a step. <em>Design pressure:</em> naming who a product is not for is the cheapest credibility a case study can buy." },
+            ],
+          },
+          differently: {
+            heading: "What I'd do differently",
+            items: [
+              {
+                title: "Study the counter.",
+                body: "Research was with patients, and the Scan &amp; Share flow ends at a registration clerk. The flow only works if the counter cooperates, and I did not study the counter. Everything past the token — whether the clerk recognises it, what happens when the facility is not on ABDM, what happens when there is no network at the desk — is designed on assumption.",
+              },
+              {
+                title: "Give the merge screen something to decide with.",
+                body: "Name, age and gender are all the screen shows, and all three match. To merge safely a person needs which facility created each profile, when, the last record attached, and the account number suffix. None of it is present, and the action it gates cannot be undone.",
+              },
+              {
+                title: "Design the consent surface, not just the notification.",
+                body: "The app tells a patient their details were shared and offers nowhere to act on it. That is the gap I would close first, and it is a product decision about scope and duration before it is a screen.",
+              },
+              {
+                title: "Put the demo data beyond doubt.",
+                body: "Four different mock identities across one file, a real-format phone number on the profile screen, and every record row repeating the same ID and timestamp. Obviously-synthetic, internally consistent data costs nothing at design time and saves this exact conversation later.",
+              },
+            ],
+          },
+          forward: {
+            heading: "What I'm taking forward",
+            items: [
+              "Count the file before describing it. The 38% split was not an intuition — it came from tallying sections, and it turned out to be the whole argument.",
+              "When a second factor looks like boilerplate, check the threat model. A PIN over an OTP is redundant against a thief and essential against a household.",
+              "An irreversible action deserves a screen before it, not a dialog after it.",
+              "If you did not research the other side of an interaction, say which side. It is worth more than an extra screen showing the happy path.",
             ],
           },
         },
