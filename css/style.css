@@ -35,6 +35,12 @@
   --accent-red: #c2410c;
   --accent-red-ink: #9a3412;
 
+  /* Where the accent goes while something is hovered. Cobalt, which this site
+     used as its accent before sienna — so the hover state is a callback rather
+     than an arbitrary second colour. */
+  --accent-alt: #2b5cff;
+  --accent-alt-ink: #1d4ed8;
+
   --hero-bg: var(--bg);
   --hero-particle-rgb: 16, 16, 18;
 
@@ -68,6 +74,8 @@
 
   --accent-red: #f2703c;
   --accent-red-ink: #f79268;
+  --accent-alt: #6b93ff;
+  --accent-alt-ink: #8fb0ff;
 }
 
 /* ─── Force-dark sections (always dark regardless of theme) ──────────────── */
@@ -6529,3 +6537,216 @@ html.no-loader #loader {
 .ww__info { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .ww__name { font-weight: 600; font-size: 0.92rem; color: var(--text); }
 .ww__role { font-size: 0.78rem; color: var(--text-muted); }
+
+/* ─── Accent shifts on hover ───────────────────────────────────────────────
+   Every red thing on the site turns blue while the pointer is on it, and only
+   while the pointer is on it.
+
+   This works without touching a single component rule because the accent is
+   delivered exclusively through two custom properties. Reassigning them on the
+   hovered element re-resolves that element's own colour — and its
+   descendants' — so one declaration covers text, fills, borders, SVG strokes
+   and the lanyard alike.
+
+   The selector list is generated from every rule in this file that actually
+   reads var(--accent-red...), so nothing accent-coloured gets left behind.
+   Pseudo-elements are folded onto the element that owns them, since ::before
+   cannot be hovered, and html/body/:root are excluded on purpose — hovering an
+   ancestor would repaint the whole page rather than the thing under the
+   cursor. */
+
+.cf-findings__n:hover,
+.cf-persona__warn:hover,
+.cf-worked li:hover,
+.cs-end__btn-primary:hover,
+.ct__dot:hover,
+.ct__email:hover,
+.ct__email-cta:hover,
+.ct__headline em:hover,
+.ct__key--live:hover,
+.dock__bullet:hover,
+.dock__resume:hover,
+.ft__ghost:hover,
+.ft__glyph.is-accent:hover,
+.ft__name em:hover,
+.ft__svg-ghost:hover,
+.fw-card__cat:hover,
+.fw-card__cs-badge:hover,
+.fw-chip:hover,
+.fw-chip--soon:hover,
+.fw-header__em:hover,
+.fw-header__label:hover,
+.hero__cycle-word:hover,
+.hero__stat-value:hover,
+.idc__tag:hover,
+.lanyard__band:hover,
+.lanyard__clip-strap:hover,
+.lanyard__strand:hover,
+.pp__glance-label:hover,
+.pp__next-eye:hover,
+.pp__next-label:hover,
+.pp__section-eye:hover,
+.pp__sidenav-indicator:hover,
+.pp__stat-suffix:hover,
+.pp__view-tab.is-active:hover,
+.rg__card--problem:hover,
+.rg__card-label--problem:hover,
+.rg__val--link:hover,
+.rq__label:hover,
+.rq__num:hover,
+.rq__stat-suffix:hover,
+.rz__btn--primary:hover,
+.shout__dot.is-active:hover,
+.shout__em:hover,
+.shout__quote:hover,
+.tower:hover,
+.tri__halo:hover,
+.tri__hint:hover,
+.tri__marker-dot:hover,
+.tri__marker-label:hover,
+.tri__marker-ring:hover,
+.tri__node.is-active .tri__disc:hover,
+.tri__node.is-active .tri__label:hover,
+.tri__readout-key:hover,
+.tri__title em:hover,
+.ww__avatar:hover,
+[data-theme="dark"] .shout__dot.is-active:hover,
+[data-theme="dark"] .shout__em:hover,
+[data-theme="dark"] .shout__quote:hover,
+a clamp:hover,
+mixed from --accent-red:hover,
+scaffolding for research findings:hover {
+  --accent-red: var(--accent-alt);
+  --accent-red-ink: var(--accent-alt-ink);
+}
+
+/* A custom property cannot be transitioned, so the ease has to live on the
+   properties that consume it. */
+.cf-findings__n,
+.cf-persona__warn,
+.cf-worked li,
+.cs-end__btn-primary,
+.ct__dot,
+.ct__email,
+.ct__email-cta,
+.ct__headline em,
+.ct__key--live,
+.dock__bullet,
+.dock__resume,
+.ft__ghost,
+.ft__glyph.is-accent,
+.ft__name em,
+.ft__svg-ghost,
+.fw-card__cat,
+.fw-card__cs-badge,
+.fw-chip,
+.fw-chip--soon,
+.fw-header__em,
+.fw-header__label,
+.hero__cycle-word,
+.hero__stat-value,
+.idc__tag,
+.lanyard__band,
+.lanyard__clip-strap,
+.lanyard__strand,
+.pp__glance-label,
+.pp__next-eye,
+.pp__next-label,
+.pp__section-eye,
+.pp__sidenav-indicator,
+.pp__stat-suffix,
+.pp__view-tab.is-active,
+.rg__card--problem,
+.rg__card-label--problem,
+.rg__val--link,
+.rq__label,
+.rq__num,
+.rq__stat-suffix,
+.rz__btn--primary,
+.shout__dot.is-active,
+.shout__em,
+.shout__quote,
+.tower,
+.tri__halo,
+.tri__hint,
+.tri__marker-dot,
+.tri__marker-label,
+.tri__marker-ring,
+.tri__node.is-active .tri__disc,
+.tri__node.is-active .tri__label,
+.tri__readout-key,
+.tri__title em,
+.ww__avatar,
+[data-theme="dark"] .shout__dot.is-active,
+[data-theme="dark"] .shout__em,
+[data-theme="dark"] .shout__quote,
+a clamp,
+mixed from --accent-red,
+scaffolding for research findings {
+  transition: color 0.18s ease, background-color 0.18s ease,
+              border-color 0.18s ease, fill 0.18s ease, stroke 0.18s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+.cf-findings__n,
+.cf-persona__warn,
+.cf-worked li,
+.cs-end__btn-primary,
+.ct__dot,
+.ct__email,
+.ct__email-cta,
+.ct__headline em,
+.ct__key--live,
+.dock__bullet,
+.dock__resume,
+.ft__ghost,
+.ft__glyph.is-accent,
+.ft__name em,
+.ft__svg-ghost,
+.fw-card__cat,
+.fw-card__cs-badge,
+.fw-chip,
+.fw-chip--soon,
+.fw-header__em,
+.fw-header__label,
+.hero__cycle-word,
+.hero__stat-value,
+.idc__tag,
+.lanyard__band,
+.lanyard__clip-strap,
+.lanyard__strand,
+.pp__glance-label,
+.pp__next-eye,
+.pp__next-label,
+.pp__section-eye,
+.pp__sidenav-indicator,
+.pp__stat-suffix,
+.pp__view-tab.is-active,
+.rg__card--problem,
+.rg__card-label--problem,
+.rg__val--link,
+.rq__label,
+.rq__num,
+.rq__stat-suffix,
+.rz__btn--primary,
+.shout__dot.is-active,
+.shout__em,
+.shout__quote,
+.tower,
+.tri__halo,
+.tri__hint,
+.tri__marker-dot,
+.tri__marker-label,
+.tri__marker-ring,
+.tri__node.is-active .tri__disc,
+.tri__node.is-active .tri__label,
+.tri__readout-key,
+.tri__title em,
+.ww__avatar,
+[data-theme="dark"] .shout__dot.is-active,
+[data-theme="dark"] .shout__em,
+[data-theme="dark"] .shout__quote,
+a clamp,
+mixed from --accent-red,
+scaffolding for research findings { transition: none; }
+}
