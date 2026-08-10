@@ -6750,3 +6750,65 @@ a clamp,
 mixed from --accent-red,
 scaffolding for research findings { transition: none; }
 }
+
+/* ─── The wordmark as a harmonium ────────────────────────────────────────────
+   js/sargam.js sounds a note per letter on hover. The visual side is here: the
+   key being held takes the accent and lifts slightly, and its sargam syllable
+   floats above it. No letter is accented at rest any more — the highlight is now
+   something the visitor causes rather than a fixed decoration. */
+.ft__glyph[data-note] {
+  cursor: pointer;
+  transition: fill 0.16s ease, transform 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+.ft__glyph[data-note].is-playing {
+  fill: var(--accent-red);
+  transform: translateY(-2.5%);
+}
+
+.ft__sargam {
+  font-family: var(--font-mono);
+  font-size: 62px;              /* SVG user units, so it scales with the mark */
+  letter-spacing: 0.08em;
+  fill: var(--accent-red);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+
+.ft__sargam.is-on { opacity: 0.9; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ft__glyph[data-note],
+  .ft__sargam { transition: none; }
+  .ft__glyph[data-note].is-playing { transform: none; }
+}
+
+/* ─── Hero on a phone ────────────────────────────────────────────────────────
+   The heading, the line under it and the stats are all one centred column at
+   this width, so the stats centre too — left-aligned figures under centred type
+   read as a different section rather than part of the same block. The top space
+   also comes down, since a phone has none to spare above the fold. */
+@media (max-width: 640px) {
+  .hero {
+    /* was 7.5rem — a phone has no room to spend above the fold */
+    padding-top: 3.5rem;
+    padding-bottom: 5rem;
+    min-height: auto;
+  }
+
+  .hero__stats {
+    justify-items: center;
+    text-align: center;
+    margin-top: 1.75rem;
+  }
+
+  .hero__stat,
+  .hero__stat-value,
+  .hero__stat-label {
+    text-align: center;
+    justify-content: center;
+  }
+}

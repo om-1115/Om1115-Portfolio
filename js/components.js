@@ -902,9 +902,16 @@ function WordmarkSVG(name, accentIndex) {
     }
     return -1;
   };
+  /* Each glyph is a harmonium key: js/sargam.js reads data-note off it and
+     sounds that degree of the scale while the pointer is on it. Seven letters in
+     the name, seven notes in the sargam, so the mapping needs no invention.
+     The ghost layer stays inert — it is a drop shadow, not a second keyboard. */
+  const SARGAM = ['Sa', 'Re', 'Ga', 'Ma', 'Pa', 'Dha', 'Ni'];
   const paths = (cls, ghost) => letters.map((l, idx) => {
     const isAccent = accentFor(idx) === accentIndex;
-    return `<path class="${cls}${isAccent && !ghost ? ' is-accent' : ''}" d="${l.d}" data-to="${l.d}" data-from="${l.from}"></path>`;
+    const note = ghost ? '' :
+      ` data-note="${idx % SARGAM.length}" data-sargam="${SARGAM[idx % SARGAM.length]}" data-letter="${l.ch}"`;
+    return `<path class="${cls}${isAccent && !ghost ? ' is-accent' : ''}" d="${l.d}" data-to="${l.d}" data-from="${l.from}"${note}></path>`;
   }).join('');
 
   return `

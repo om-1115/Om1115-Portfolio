@@ -115,7 +115,9 @@ const portfolio = {
   // ── Footer ────────────────────────────────────────────────────────────────
   footer: {
     // one letter of the name is set in the accent colour — index into the string
-    accentIndex: 4,
+    // -1 = no permanently highlighted letter; the accent now appears on hover,
+    // one key at a time, as part of the sargam interaction.
+    accentIndex: -1,
     tagline: "Thoughtful by design.",
     colophon: "built by om · © 2026",
     ticker: ["Made in Figma", "Hand-written HTML, CSS and JS", "Designed in Noida", "♥"],
