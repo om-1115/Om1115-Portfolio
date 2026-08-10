@@ -16,9 +16,12 @@ const portfolio = {
   ],
   about: "I'm a UX designer with a focus on systems thinking and interface clarity. I believe good design disappears — it just works. Currently building at ConveGenius.AI.",
   statement: "Designer who codes, coder who thinks in strategy, strategist who ships.",
+  // Paragraphs are rendered as HTML, so the role line can carry its own emphasis
+  // and link without a separate field.
   bioParagraphs: [
-    "I've been a designer since 2022. Initially drawn to visual design — crafting interfaces, replicating shots from Dribbble just to see if I could pull them off. What started as curiosity about making things look good slowly turned into something deeper.",
-    "Over time, I found myself more interested in design systems and the spaces where design meets engineering. I love creating order, consistency, and scalable foundations. I've designed for governance, education, and healthcare — and I find myself most engaged when thinking about how systems can scale without breaking.",
+    "<strong>Senior UX Designer at <a href=\"https://convegenius.ai\" target=\"_blank\" rel=\"noopener\">ConveGenius.AI</a></strong> — designing and building software for India's public systems.",
+    "I work where government meets technology: courts, classrooms, and clinics. Most of what I design ends up on an entry-level Android phone, on a patchy network, in a language that isn't English. That constraint shapes everything — the research, the interface, and the code.",
+    "I don't stop at handoff. I build the design systems, prototype in React, and ship the front end.",
   ],
   email: "okumar1502@gmail.com",
 
