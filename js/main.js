@@ -235,20 +235,62 @@ document.addEventListener("DOMContentLoaded", async () => {
   initHeroFit();
   initCycleText();
 
-  // ─── Avatar click easter egg ──────────────────────────────────────────────
+  /* ─── Avatar click easter egg ──────────────────────────────────────────────
+     The bubble reports how many times anyone, ever, has tried to zoom the photo
+     — so the number has to be shared rather than per-browser. It comes from a
+     small public counter service; localStorage would only ever count one person
+     and would quietly turn a global claim into a private one.
+
+     If the service cannot be reached the line falls back to having no number in
+     it at all, rather than showing a local count dressed up as a global one.
+     The last two counter services this pattern relies on have already shut down
+     — countapi.xyz is gone and counterapi.dev v1 now returns 410 — so this is
+     written to survive the third one going the same way. */
   const avatarWrap = document.querySelector('.hero__avatar-wrap');
   const bubble     = avatarWrap && avatarWrap.querySelector('.hero__bubble');
   if (avatarWrap && bubble) {
     const originalText = bubble.textContent;
+    const COUNTER = 'https://abacus.jasoncameron.dev';
+    const NS = 'uxom-portfolio', KEY = 'avatar-zoom';
+    let known = null;            // last value the service gave us
     let resetTimer;
+
+    const ordinal = n => {
+      const s = ['th', 'st', 'nd', 'rd'], v = n % 100;
+      return n.toLocaleString('en-IN') + (s[(v - 20) % 10] || s[v] || s[0]);
+    };
+
+    const line = n => n === null
+      ? 'Na buddy, you cannot zoom me 🥹'
+      : `This is the ${ordinal(n)} time someone tried to zoom me 🥹`;
+
+    // Read the running total on load without adding to it, so the first click
+    // can show a real number immediately instead of a spinner.
+    fetch(`${COUNTER}/get/${NS}/${KEY}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d && typeof d.value === 'number') known = d.value; })
+      .catch(() => {});
+
     avatarWrap.addEventListener('click', () => {
-      bubble.textContent = 'Na buddy, you cannot zoom me 🥹';
+      // optimistic: assume our hit lands, then reconcile with what the service says
+      bubble.textContent = line(known === null ? null : known + 1);
       avatarWrap.classList.add('bubble-pinned');
+
+      fetch(`${COUNTER}/hit/${NS}/${KEY}`)
+        .then(r => r.ok ? r.json() : null)
+        .then(d => {
+          if (d && typeof d.value === 'number') {
+            known = d.value;
+            if (avatarWrap.classList.contains('bubble-pinned')) bubble.textContent = line(known);
+          }
+        })
+        .catch(() => {});
+
       clearTimeout(resetTimer);
       resetTimer = setTimeout(() => {
         bubble.textContent = originalText;
         avatarWrap.classList.remove('bubble-pinned');
-      }, 2800);
+      }, 3400);
     });
   }
 
