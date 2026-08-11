@@ -2625,7 +2625,10 @@ a.exp__company:hover {
   align-items: center;
   width: fit-content;
   gap: 0;
-  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  /* was 62% translucent — the pill was showing project work through itself.
+     Solid, so it reads as chrome sitting above the page rather than a smear
+     over it. The blur below stays for the edge treatment. */
+  background: var(--bg);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   backdrop-filter: blur(24px) saturate(180%);
   color: var(--dock-fg);
@@ -2656,7 +2659,7 @@ a.exp__company:hover {
 }
 
 [data-theme="dark"] .dock {
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  background: var(--bg);
   border-color: rgba(255, 255, 255, 0.10);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
@@ -6811,4 +6814,41 @@ scaffolding for research findings { transition: none; }
     text-align: center;
     justify-content: center;
   }
+}
+
+/* A card leads with a sentence now; the tags are a footnote to it, not the
+   description itself. */
+.fw-card__line {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text);
+  margin-top: 0.1rem;
+}
+
+.fw-card__line + .fw-card__role {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ─── Dock hides on the way down ─────────────────────────────────────────────
+   A fixed pill over a portfolio is worst exactly when someone is reading the
+   work: it sat across the bottom of every project card. It now drops out of the
+   way while scrolling down and returns on the first upward scroll, which is when
+   navigation is actually wanted. js/dock-hide.js sets the class. */
+.dock-wrap {
+  transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+}
+
+.dock-wrap.is-tucked {
+  transform: translateY(calc(100% + 2rem));
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dock-wrap { transition: none; }
 }

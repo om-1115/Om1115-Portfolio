@@ -3,16 +3,21 @@ const portfolio = {
   title: "User Experience Designer",
   heroGreeting: "Hello, from the designer's desk.",
   heroCyclePrefix: "UX designer with a focus on",
-  heroCycleWords: ["decision-first dashboards", "0-to-1 strategy", "the quiet UX", "AI-native products", "human-in-the-loop UX", "design systems that scale", "agentic interfaces"],
+  // Concrete places, not categories. "design systems that scale" is gone — the
+  // banned word was sitting in the rotation.
+  heroCycleWords: ["courts", "classrooms", "clinics", "systems you cannot opt out of"],
   tagline: "Thoughtful",
   taglineAccent: "by",
   taglineEnd: "design",
-  heroSubtitle: "Making complex things simple to create clear, efficient experiences that drive results.",
+  // 19 words, one sourced number. No "scale", no "simple", no "drive results".
+  heroSubtitle: "I do the district field research, then build and ship the design system. 1.2M users across 4 government products.",
   heroStats: [
     { value: "3+",   label: "Years shipping" },
     { value: "10+",  label: "Projects delivered" },
     { value: "15+",  label: "Brands worked with" },
-    { value: "36M+", label: "Users reached" },
+    // was "36M+ users reached" — nothing supports 36M, and it contradicted the
+    // 1.2M in the hero. 6 states is stated in the ConveGenius résumé bullet.
+    { value: "6",    label: "States deployed in" },
   ],
   about: "I'm a UX designer with a focus on systems thinking and interface clarity. I believe good design disappears — it just works. Currently building at ConveGenius.AI.",
   statement: "Designer who codes, coder who thinks in strategy, strategist who ships.",
@@ -373,6 +378,7 @@ const portfolio = {
     //  12. PUCAR/Agami consent to publish, and anything they want excluded.
     {
       id: "07",
+      cardLine: "Rebuilt court e-filing around upfront upload and extraction review. Contributed, plus a solo audit of the public site. Shipped to review.",
       thumb: "assets/work/thumbs/encode-pucar.png",
       status: "shipped",
       title: "Encode Pucar",
@@ -725,6 +731,7 @@ const portfolio = {
     //      publishing exhibits A and B.
     {
       id: "08",
+      cardLine: "A court workspace with the design system inside it, auditing its own contrast at runtime. Designed end to end. Deployed.",
       thumb: "assets/work/thumbs/oncourt-sandbox.png",
       status: "shipped",
       title: "ON Court Sandbox",
@@ -1067,6 +1074,7 @@ const portfolio = {
     //      level/band values here come from the brief's quotation of it.
     {
       id: "09",
+      cardLine: "Read a child-assessment scoring model for where a child turns into a number. Solo audit and redesign. Shipped.",
       thumb: "assets/work/thumbs/hpc.png",
       status: "shipped",
       title: "Holistic Progress Card",
@@ -1328,6 +1336,7 @@ const portfolio = {
     //      demo data here and must never be repeated as an outcome.
     {
       id: "10",
+      cardLine: "Admin console for six government chatbots across three languages. Product designer. Shipped, now inside the Krutrim–Ola stack.",
       status: "shipped",
       title: "Bharat SahAIyak",
       category: "Product Design",
@@ -1541,6 +1550,7 @@ const portfolio = {
 
     {
       id: "11",
+      cardLine: "Identity-first patient app for India\u2019s national health ID \u2014 38% of it is working out who is holding the phone. Research and design. Shipped.",
       title: "ABHA Patient App",
       category: "Product Design",
       year: "2025",

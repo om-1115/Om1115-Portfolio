@@ -135,8 +135,12 @@ function WorkScreenshotMockup({ accentColor }) {
     </div>`;
 }
 
-function WorkProjectRow({ id, title, category, year, tags, color, accentColor, description, status, thumb }) {
-  const meta = tags ? tags.join(' • ') : description;
+function WorkProjectRow({ id, title, category, year, tags, color, accentColor, description, status, thumb, cardLine }) {
+  /* A sentence first — what it is, whose work it was, what happened to it. Tags
+     alone made every card read as a category list rather than as a project, so
+     they now sit under the sentence instead of standing in for it. */
+  const sentence = cardLine || description;
+  const tagLine = tags && tags.length ? tags.join(' • ') : '';
   const isComingSoon = status === 'coming-soon';
   const cardClass = `fw-card${status ? ` fw-card--${status}` : ''}`;
   const interactive = isComingSoon ? '' : `data-project-id="${id}" role="button" tabindex="0"`;
@@ -163,7 +167,8 @@ function WorkProjectRow({ id, title, category, year, tags, color, accentColor, d
       <div class="fw-card__info">
         <span class="fw-card__cat">${category} · ${year}</span>
         <h3 class="fw-card__title">${title}</h3>
-        <p class="fw-card__role">${meta}</p>
+        <p class="fw-card__line">${sentence}</p>
+        ${tagLine ? `<p class="fw-card__role">${tagLine}</p>` : ''}
       </div>
     </article>`;
 }

@@ -220,7 +220,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // — first Bharat SahAIyak, then ABHA — because adding a project does not
     // touch this line, so nothing here fails when the list outgrows it.
     ProjectsGrid(portfolio, { viewAllUrl: 'work.html' }),
-    SkillsSection(portfolio),
+    // Cut: SkillsSection rendered both the three generic capability cards and the
+    // twelve skill chips. Figma and Adobe CC are table stakes, not
+    // differentiators, and the cards restated the hero in vaguer words.
+    // portfolio.capabilities and portfolio.skills are still in data.js, so this
+    // one line brings the whole section back.
+    // SkillsSection(portfolio),
     ExperienceSection(portfolio),
     // Gallery pulled for now — GallerySection() and portfolio.carousels are
     // still here, so putting it back is this one line.
