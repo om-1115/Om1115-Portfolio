@@ -38,6 +38,10 @@
   /* Where the accent goes while something is hovered. Cobalt, which this site
      used as its accent before sienna — so the hover state is a callback rather
      than an arbitrary second colour. */
+  /* The dock is fixed at bottom:24px and the pill is ~64px tall. Anything that
+     would otherwise end up underneath it reserves this instead of guessing. */
+  --dock-clear: 6.5rem;
+
   --accent-alt: #2b5cff;
   --accent-alt-ink: #1d4ed8;
 
@@ -168,8 +172,10 @@ ul { list-style: none; }
   justify-content: center;
   background: var(--hero-bg);
   overflow: hidden;
-  padding-top: clamp(5rem, 14vh, 10rem);
-  padding-bottom: clamp(2rem, 6vh, 4rem);
+  padding-top: clamp(2rem, 6vh, 5rem);
+  /* was clamp(2rem, 6vh, 4rem) — less than the dock's own footprint, so the
+     stats row ended up sitting behind the pill on short windows. */
+  padding-bottom: var(--dock-clear);
 }
 
 #app {
@@ -266,7 +272,11 @@ ul { list-style: none; }
   font-family: "Perfectly Nineties", Georgia, serif;
   /* --hero-fs is set by initHeroFit() when the longest cycling phrase
      would overflow the container; falls back to the fluid scale. */
-  font-size: var(--hero-fs, clamp(1.75rem, 6vw, 6rem));
+  /* Sized by whichever axis is scarcer. 6vw alone gave a 1460×680 window an
+     88px face and a hero taller than the window itself, which is what pushed
+     the stats behind the dock; the 9vh term caps it on short screens and gives
+     way to 6vw once there is height to spend. */
+  font-size: var(--hero-fs, clamp(1.75rem, min(6vw, 9vh), 6rem));
   font-weight: 400;
   color: var(--text);
   line-height: 1.1;
