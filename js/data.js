@@ -3,9 +3,7 @@ const portfolio = {
   title: "User Experience Designer",
   heroGreeting: "Hello, from the designer's desk.",
   heroCyclePrefix: "UX designer with a focus on",
-  // Concrete places, not categories. "design systems that scale" is gone — the
-  // banned word was sitting in the rotation.
-  heroCycleWords: ["courts", "classrooms", "clinics", "systems you cannot opt out of"],
+  heroCycleWords: ["decision-first dashboards", "0-to-1 strategy", "the quiet UX", "AI-native products", "human-in-the-loop UX", "design systems that scale", "agentic interfaces"],
   tagline: "Thoughtful",
   taglineAccent: "by",
   taglineEnd: "design",
