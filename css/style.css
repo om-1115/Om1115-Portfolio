@@ -172,10 +172,9 @@ ul { list-style: none; }
   justify-content: center;
   background: var(--hero-bg);
   overflow: hidden;
-  padding-top: clamp(2rem, 6vh, 5rem);
-  /* was clamp(2rem, 6vh, 4rem) — less than the dock's own footprint, so the
-     stats row ended up sitting behind the pill on short windows. */
-  padding-bottom: var(--dock-clear);
+  /* The bar sits at the top now, so the clearance moves with it. */
+  padding-top: calc(var(--dock-clear) + clamp(1rem, 3vh, 2.5rem));
+  padding-bottom: clamp(2rem, 6vh, 4rem);
 }
 
 #app {
@@ -2602,7 +2601,9 @@ a.exp__company:hover {
 
 .dock-wrap {
   position: fixed;
-  bottom: 24px;
+  /* Moved from the bottom to the top to match the reference's header. */
+  top: 20px;
+  bottom: auto;
   left: 0;
   right: 0;
   display: flex;
@@ -2633,7 +2634,8 @@ a.exp__company:hover {
   pointer-events: auto;
   display: flex;
   align-items: center;
-  width: fit-content;
+  /* A wide bar rather than a centred capsule: wordmark left, links right. */
+  width: min(var(--max-w), calc(100% - 2 * var(--page-pad)));
   gap: 0;
   /* was 62% translucent — the pill was showing project work through itself.
      Solid, so it reads as chrome sitting above the page rather than a smear
@@ -2788,7 +2790,7 @@ a.exp__company:hover {
 
 /* Mobile — hide brand, compress links */
 @media (max-width: 600px) {
-  .dock-wrap { bottom: 16px; padding: 0 12px; }
+  .dock-wrap { top: 12px; bottom: auto; padding: 0 12px; }
   /* the pill is wider than a phone; let it scroll inside its own max-width
      instead of running off the right edge */
   .dock {
@@ -6854,7 +6856,7 @@ scaffolding for research findings { transition: none; }
 }
 
 .dock-wrap.is-tucked {
-  transform: translateY(calc(100% + 2rem));
+  transform: translateY(calc(-100% - 2rem));
   opacity: 0;
   pointer-events: none;
 }
@@ -6932,3 +6934,14 @@ scaffolding for research findings { transition: none; }
 @media (max-width: 900px) {
   .hero__sticker { display: none; }
 }
+
+/* The wordmark holds the left edge; everything else is pushed to the right,
+   which is the reference header's arrangement. One auto margin does it without
+   needing a wrapper element around the links. */
+.dock__brand { margin-right: auto; }
+
+/* The rule that separated the wordmark from the links made sense when they were
+   adjacent in a capsule. With the wordmark holding the left edge it is a mark
+   floating in space, so it goes. */
+.dock__brand::after { content: none; }
+.dock__brand { border-right: 0; padding-right: 0; }
