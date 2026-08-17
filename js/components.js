@@ -54,6 +54,11 @@ function HeroSection({ heroGreeting, heroSubtitle, email, heroCyclePrefix, heroC
   return `
     <section class="hero" id="top">
       <div class="hero__content">
+        <!-- Rotated sticker labels, scattered around the headline. Decorative and
+             aria-hidden: they repeat what the copy already says. -->
+        <span class="hero__sticker hero__sticker--a" aria-hidden="true">FIELD RESEARCHER</span>
+        <span class="hero__sticker hero__sticker--b" aria-hidden="true">SHIPS THE FRONT END</span>
+        <span class="hero__sticker hero__sticker--c" aria-hidden="true">GOV TECH</span>
         <div class="hero__avatar-wrap">
           <div class="hero__bubble">Hello!! 👋</div>
           <div class="hero__avatar">

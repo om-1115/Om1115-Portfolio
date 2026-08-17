@@ -6862,3 +6862,73 @@ scaffolding for research findings { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   .dock-wrap { transition: none; }
 }
+
+/* ─── Blueprint grid ground ──────────────────────────────────────────────────
+   A faint graph-paper grid behind everything, the way a working drawing sits on
+   gridded paper. Painted on #scroll-wrap rather than body so it travels with the
+   page, and built from two repeating-linear-gradients rather than an image, so
+   it costs nothing to load and re-colours with the theme. */
+#scroll-wrap,
+.hero {
+  /* .hero paints its own --hero-bg over the scroll container, so it has to
+     carry the grid too or the first screenful is the one place without it. */
+  background-image:
+    repeating-linear-gradient(to right,  var(--grid-line) 0 1px, transparent 1px 88px),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 88px);
+}
+
+#scroll-wrap { background-color: var(--bg); }
+
+:root { --grid-line: rgba(16, 16, 18, 0.055); }
+[data-theme="dark"] { --grid-line: rgba(240, 236, 229, 0.05); }
+
+/* Sections that need to sit on their own ground paint it, so the grid reads as
+   the page's paper rather than showing through every card. */
+.shoutouts, .ft, .cm { background-color: var(--bg); }
+
+/* ─── Hero stickers ──────────────────────────────────────────────────────────
+   Rotated pill labels in the margins of the headline. Absolutely positioned so
+   they cannot disturb the type they sit beside, and hidden on small screens
+   where there is no margin to scatter them into. */
+.hero__content { position: relative; }
+
+.hero__sticker {
+  position: absolute;
+  z-index: 2;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2b2620;
+  white-space: nowrap;
+  box-shadow: 0 2px 0 rgba(16, 16, 18, 0.06);
+  pointer-events: none;
+}
+
+.hero__sticker--a {
+  background: #ffd9b8;              /* peach */
+  top: 20%;
+  right: 4%;
+  transform: rotate(-7deg);
+}
+
+.hero__sticker--b {
+  background: #dcd2ff;              /* lavender */
+  top: 44%;
+  left: 2%;
+  transform: rotate(5deg);
+}
+
+.hero__sticker--c {
+  background: #c9f0d2;              /* mint */
+  top: 62%;
+  right: 9%;
+  transform: rotate(8deg);
+}
+
+@media (max-width: 900px) {
+  .hero__sticker { display: none; }
+}
